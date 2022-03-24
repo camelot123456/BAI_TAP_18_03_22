@@ -1,0 +1,10 @@
+const userType = {
+    CREATE: 'CREATE',
+    UPDATE: "UPDATE",
+    SHOW_LIST: "SHOW_LIST",
+    SHOW_FIND_ALL_BY_ID_USER: "SHOW_FIND_ALL_BY_ID_USER",
+    ERROR: "ERROR",
+    RESET_USER_AND_ROLE: "RESET_USER_AND_ROLE",
+}
+
+export default userType

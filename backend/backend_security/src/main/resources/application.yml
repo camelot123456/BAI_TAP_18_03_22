@@ -1,0 +1,35 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:sqlserver://DESKTOP-MRTBVU0\\BAOCS:1433;databaseName=activity_18_03_22
+    username: sa
+    password: 1
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: nguyensybao1403@gmail.com
+    password: vmgskvnyngndivfc
+    properties:
+      mail: 
+        smtp: 
+          auth: true
+          starttls:
+            enable: true
+
+  
+app:
+  gmail: 
+    emailSystem: nguyensybao1403@gmail.com
+    verifyUrl: http://localhost:8081/pub/verifyUrl?otpCode=
+    pathHtmlFormVerify: src/main/resources/static
