@@ -29,10 +29,10 @@ public class UserEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "[name]")
+	@Column(name = "[name]", columnDefinition = "nvarchar(40) not null")
 	private String name;
 	
-	@Column(name = "[username]", unique = true)
+	@Column(name = "[username]", columnDefinition = "varchar(320) not null unique")
 	private String username;
 	
 	@Column(name = "[email]", columnDefinition = "varchar(320) not null unique")

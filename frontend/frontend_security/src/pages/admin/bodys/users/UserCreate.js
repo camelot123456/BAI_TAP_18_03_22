@@ -14,18 +14,18 @@ function UserCreate () {
     const initialValues = {
         name: '',
         username: '',
+        email: '',
         password: '',
         confirmPassword: ''
     }
 
     const validationScheme = Yup.object().shape({
+        email: Yup.string().email().required(),
         name: Yup.string().min(6).max(40).matches(/^([\p{L}'][ \p{L}'-]*[\p{L}]){3,}$/u, { excludeEmptyString: true, message: 'Invalid' }).required(),
         username: Yup.string().min(6).matches(/^[a-zA-Z0-9]+([._]?[a-zA-Z0-9]+)*$/, { excludeEmptyString: true, message: 'Invalid' }).required(),
         password: Yup.string().min(6).required(),
         confirmPassword: Yup.string().min(6).required().oneOf([Yup.ref('password')], "Confirm password not mattchers!")
     })
-
-    
 
     const handleComeback = () => {
         navigate(-1)
@@ -35,6 +35,7 @@ function UserCreate () {
         <Formik initialValues={initialValues} validationSchema={validationScheme}
             onSubmit={(values) => {
                 dispatch(doCreate({
+                    email: values.email,
                     name: values.name, 
                     username: values.username, 
                     password: values.confirmPassword
@@ -58,6 +59,12 @@ function UserCreate () {
                             <label htmlFor="name">name</label><br />
                             <input id="name" value={values.name} onChange={handleChange} onBlur={handleBlur} />
                             <p className="message-error">{errors.name}</p>
+                        </div>
+
+                        <div style={{marginTop: '8px'}}>
+                            <label htmlFor="email">email</label><br />
+                            <input id="email" value={values.email} type="email" onChange={handleChange} onBlur={handleBlur} />
+                            <p className="message-error">{errors.email}</p>
                         </div>
 
                         <div style={{marginTop: '8px'}}>

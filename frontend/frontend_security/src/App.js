@@ -18,6 +18,8 @@ import UserUpdate from "./pages/admin/bodys/users/UserUpdate";
 import UserCreate from "./pages/admin/bodys/users/UserCreate";
 import ForgotPassword from "./pages/auth/bodys/ForgotPassword";
 import EmailSent from "./pages/auth/bodys/EmailSent";
+import FormResetPassword from "./pages/auth/bodys/FormResetPassword";
+import PasswordChanged from "./pages/auth/bodys/PasswordChanged";
 
 function App() {
   return (
@@ -57,6 +59,8 @@ function App() {
             <Route path="register" element={<Register />}></Route>
             <Route path="forgotPassword" element={<ForgotPassword />}></Route>
             <Route path="emailSent" element={<EmailSent />}></Route>
+            <Route path="resetPassword" element={<FormResetPassword />}></Route>
+            <Route path="passwordChanged" element={<PasswordChanged />}></Route>
           </Route>
 
           <Route path="admin" element={<AdminLayout />}>

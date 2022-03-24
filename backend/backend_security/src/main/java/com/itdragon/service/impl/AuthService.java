@@ -1,6 +1,7 @@
 package com.itdragon.service.impl;
 
 import java.io.FileNotFoundException;
+import java.util.NoSuchElementException;
 
 import javax.mail.MessagingException;
 
@@ -83,14 +84,53 @@ public class AuthService implements IAuthService{
 	@Override
 	public HttpStatus doVerifyEmail(String otpCode) {
 		// TODO Auto-generated method stub
-		UserEntity user = userRepo.findByOtpCode(otpCode).get();
-		if (user == null) {
+		try {
+			UserEntity user = userRepo.findByOtpCode(otpCode).get();
+			if (user != null) {
+				user.setEnabled(true);
+				user.setOtpCode(null);
+				userRepo.save(user);
+			}
+			return HttpStatus.OK;
+		} catch (NoSuchElementException e) {
+			// TODO: handle exception
 			return HttpStatus.EXPECTATION_FAILED;
 		}
-		user.setEnabled(true);
-		user.setOtpCode(null);
-		userRepo.save(user);
+	}
+
+	@Transactional
+	@Override
+	public HttpStatus doSendMailResetPassword(AppProperties appProperties, UserEntity user, IMailSenderService mailServ) throws FileNotFoundException, MessagingException {
+		// TODO Auto-generated method stub
+		UserEntity userVerify = userRepo.findByEmail(user.getEmail());
+		if (userVerify == null) {
+			return HttpStatus.NOT_FOUND;
+		}
+		String otpCode = "";
+		do {
+			otpCode = RandomString.make(64);
+		} while (userRepo.existsByOtpCode(otpCode));
+		userVerify.setOtpCode(otpCode);
+		userRepo.save(userVerify);
+		mailServ.sendFormResetPassword(appProperties, userVerify);
 		return HttpStatus.OK;
+	}
+
+	@Override
+	public HttpStatus doChangePassword(UserEntity user) {
+		// TODO Auto-generated method stub
+		try {
+			UserEntity userChangePassword = userRepo.findByOtpCode(user.getOtpCode()).get();
+			if (userChangePassword != null) {
+				userChangePassword.setOtpCode(null);
+				userChangePassword.setPassword(passwordEncoder.encode(user.getPassword()));
+				userRepo.save(userChangePassword);
+			}
+			return HttpStatus.OK;
+		} catch (NoSuchElementException e) {
+			// TODO: handle exception
+			return HttpStatus.EXPECTATION_FAILED;
+		}
 	}
 
 }

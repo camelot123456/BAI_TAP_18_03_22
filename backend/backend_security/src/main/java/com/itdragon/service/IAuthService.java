@@ -16,4 +16,8 @@ public interface IAuthService {
 	public UserEntity doRegister(AppProperties appProperties, UserEntity user, IMailSenderService mailServ) throws FileNotFoundException, MessagingException;
 	
 	public HttpStatus doVerifyEmail(String otpCode);
+	
+	public HttpStatus doSendMailResetPassword(AppProperties appProperties, UserEntity user, IMailSenderService mailServ) throws FileNotFoundException, MessagingException;
+	
+	public HttpStatus doChangePassword(UserEntity user);
 }

@@ -41,9 +41,19 @@ public class AuthApi {
 		return ResponseEntity.ok().body(res);
 	}
 	
+	@PostMapping("/forgotPassword")
+	public ResponseEntity<?> doForgotPassword(@RequestBody UserEntity user) throws FileNotFoundException, MessagingException {
+		return ResponseEntity.ok().body(authServ.doSendMailResetPassword(appProperties, user, mailServ));
+	}
+	
 	@PostMapping("/register")
 	public ResponseEntity<?> doRegister(@RequestBody UserEntity user) throws FileNotFoundException, MessagingException {
 		return ResponseEntity.ok().body(authServ.doRegister(appProperties, user, mailServ));
+	}
+	
+	@PostMapping("/changePassword")
+	public ResponseEntity<?> doChangePassword(@RequestBody UserEntity user) {
+		return ResponseEntity.ok().body(authServ.doChangePassword(user));
 	}
 	
 	@GetMapping("/verifyUrl")

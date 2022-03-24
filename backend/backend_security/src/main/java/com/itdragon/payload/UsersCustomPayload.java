@@ -17,5 +17,6 @@ public class UsersCustomPayload {
 	private BigInteger idRole;
 	private String code;
 	private String password;
+	private String email;
 	
 }

@@ -33,3 +33,23 @@ export const doRegister = (loginForm) => (dispatch) => {
         .catch(err => reject())
     })
 }
+
+export const doEmailSent = (data) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        authService.doEmailSent(data)
+        .then(res => {
+            resolve()
+        })
+        .catch(err => reject())
+    })
+}
+
+export const doChangePassword = (data) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        authService.doChangePassword(data)
+        .then(res => {
+            resolve()
+        })
+        .catch(err => reject())
+    })
+}

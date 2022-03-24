@@ -50,8 +50,44 @@ public class MailSenderService implements IMailSenderService{
 			
 			mailSender.send(message);
 			
-			System.out.println(appProperties.getGmail().getEmailSystem());
-			System.out.println("send email");
+			return HttpStatus.OK;
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			return HttpStatus.INTERNAL_SERVER_ERROR;
+		} finally {
+			sc.close();
+		}
+	}
+
+	@Override
+	public HttpStatus sendFormResetPassword(AppProperties appProperties, UserEntity user)
+			throws MessagingException, FileNotFoundException {
+		// TODO Auto-generated method stub
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+		Scanner sc = new Scanner(new File(appProperties.getGmail().getPathHtmlFormVerify() + "/reset-password.html"));
+		
+		try {
+			helper.setSubject("Itdragons Reset Password");
+			helper.setFrom(appProperties.getGmail().getEmailSystem());
+			helper.setTo(user.getEmail());
+			
+			
+			String htmlContent = "";
+			
+			while (sc.hasNext()) {
+				htmlContent += sc.nextLine();
+			}
+			
+			String resetPasswordUrl = appProperties.getGmail().getResetPasswordUrl() + user.getOtpCode();
+			
+			htmlContent = htmlContent.replace("[[${nameUser}]]", user.getName());
+			htmlContent = htmlContent.replace("[[${resetPasswordUrl}]]", resetPasswordUrl);
+			message.setContent(htmlContent, "text/html; charset=UTF-8");
+			
+			mailSender.send(message);
+			
 			return HttpStatus.OK;
 			
 		} catch (Exception e) {

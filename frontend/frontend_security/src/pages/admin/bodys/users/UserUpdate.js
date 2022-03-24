@@ -18,11 +18,13 @@ function UserUpdate() {
 
     const initialValues = {
         name: '',
+        email: '',
         password: '',
         confirmPassword: ''
     }
 
     const validationScheme = Yup.object().shape({
+        email: Yup.string().email().required(),
         name: Yup.string().min(6).max(40).matches(/^([\p{L}'][ \p{L}'-]*[\p{L}]){3,}$/u, { excludeEmptyString: true, message: 'Invalid' }).required(),
         password: Yup.string().min(6).required(),
         confirmPassword: Yup.string().min(6).required().oneOf([Yup.ref('password')], "Confirm password not mattchers!")
@@ -35,6 +37,7 @@ function UserUpdate() {
     useEffect(() => {
         userAndRoles.forEach(user => handleAddIdRole(user.idRole))
         initialValues.name = userAndRoles[0].name || ''
+        initialValues.email = userAndRoles[0].email || ''
     }, [])
 
     const handleComeback = () => {
@@ -58,6 +61,7 @@ function UserUpdate() {
                 var data = {
                     id: idUser,
                     name: values.name, 
+                    email: values.email,
                     password: values.confirmPassword, 
                     idRoles
                 }
@@ -87,6 +91,12 @@ function UserUpdate() {
                             <label htmlFor="name">name</label><br />
                             <input id="name" value={values.name} onChange={handleChange} onBlur={handleBlur} />
                             <p className="message-error">{errors.name}</p>
+                        </div>
+
+                        <div style={{marginTop: '8px'}}>
+                            <label htmlFor="email">email</label><br />
+                            <input id="email" type="email" value={values.email} onChange={handleChange} onBlur={handleBlur} />
+                            <p className="message-error">{errors.email}</p>
                         </div>
 
                         <div style={{marginTop: '8px'}}>

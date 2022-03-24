@@ -16,10 +16,12 @@ public interface IUserRepository extends JpaRepository<UserEntity, Long>{
 	
 	public Boolean existsByOtpCode(String otpCode);
 	
+	public UserEntity findByEmail(String email);
+	
 	public Optional<UserEntity> findByOtpCode(String otpCode);
 	
 	@Query(value = "select u.id as idUser, u.[name], u.username, r.id as idRole, r.code, "
-			+ "u.password "
+			+ "u.password, u.email "
 			+ "from users u left join user_role ur "
 			+ "on u.id = ur.id_user left join roles r "
 			+ "on ur.id_role = r.id "

@@ -17,6 +17,7 @@ public class AppProperties {
 		private String emailSystem;
 		private String verifyUrl;
 		private String pathHtmlFormVerify;
+		private String resetPasswordUrl;
 	}
 	
 }

@@ -1,60 +1,74 @@
+import { Form, Formik } from "formik";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import {Link, useNavigate} from "react-router-dom"
-import "../../../App.css";
+import * as Yup from 'yup'
 
+import "../../../App.css";
 import { doLogin } from "../../../redux/actions/auth-action";
 
 
 function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("")
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  const handleSignIn = () => {
-    dispatch(doLogin({ username, password }))
-    .then(() => {
-        navigate("/home")
-        setError('')
-    })
-    .catch(() => {
-        navigate("/auth/login")
-        setError('Incorrect Username or Password.')
-    })
-  };
+  const initialValues = {
+    username: '',
+    password: ''
+  }
+
+  const validationSchema = Yup.object().shape({
+    username: Yup.string().required(),
+    password: Yup.string().required()
+  })
   
   return (
-    <div className="container-center">
-      <h1>Login</h1>
-  
-      <div>
-        <label htmlFor="username"></label>
-        <input
-          id="username"
-          onChange={(e) => setUsername(e.target.value)}
-        ></input>
-      </div>
-  
-      <div>
-        <label htmlFor="password"></label>
-        <input
-          id="password"
-          type="password"
-          onChange={(e) => setPassword(e.target.value)}
-        ></input>
-      </div>
-  
-      <p style={{color: "red"}}>{error}</p>
-  
-      <button style={{ maxWidth: "100px" }} onClick={handleSignIn}>
-        Sign In
-      </button>
-      <hr />
-      <Link style={{marginRight: '16px'}} to="/auth/register">Register</Link>
-      <Link to="/auth/forgotPassword">Forgot Password ?</Link>
-    </div>
+    <Formik initialValues={initialValues} validationSchema={validationSchema} 
+      onSubmit={(values) => {
+        dispatch(doLogin({
+          username: values.username, 
+          password: values.password
+        }))
+        .then(() => {
+            navigate("/home")
+        })
+        .catch(() => {
+            navigate("/auth/login")
+            setError('Incorrect Username or Password.')
+        })
+      }}>
+      {(formikProps) => {
+        const {values, errors, handleChange, handleBlur} = formikProps;
+
+        return (
+          <Form className="container-center">
+            <h1>Login</h1>
+        
+            <div style={{marginTop: '8px'}}>
+              <label htmlFor="username">username</label><br />
+              <input id="username" value={values.username} onChange={handleChange} onBlur={handleBlur} />
+              <p className="message-error">{errors.username}</p>
+            </div>
+
+            <div style={{marginTop: '8px'}}>
+              <label htmlFor="password">password</label><br />
+              <input type='password' id="password" value={values.password} onChange={handleChange} onBlur={handleBlur} />
+              <p className="message-error">{errors.password}</p>
+            </div>
+        
+            <p style={{color: "red"}}>{error}</p>
+        
+            <button style={{ maxWidth: "100px" }} type="submit">
+              Sign In
+            </button>
+            <hr />
+            <Link style={{marginRight: '16px'}} to="/auth/register">Register</Link>
+            <Link to="/auth/forgotPassword">Forgot Password ?</Link>
+          </Form>
+        )
+      }}
+    </Formik>
   );
 }
 

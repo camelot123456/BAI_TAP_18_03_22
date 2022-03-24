@@ -27,6 +27,15 @@ public class UserRoleService implements IUserRoleService{
 	public void addUserToRole(Long id, Long[] ids) {
 		// TODO Auto-generated method stub
 		UserEntity user = userRepo.findById(id).get();
+		if (ids.length == 0) {
+			RoleEntity role = roleRepo.findByCode("USER");
+			UserRoleEntity ure = new UserRoleEntity();
+			
+			ure.setUser(user);
+			ure.setRole(role);
+			userRoleRepo.save(ure);
+			return;
+		}
 		for (Long idRole : ids) {
 			RoleEntity role = roleRepo.findById(idRole).get();
 			UserRoleEntity ure = new UserRoleEntity();

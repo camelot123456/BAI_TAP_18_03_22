@@ -13,4 +13,6 @@ public interface IMailSenderService {
 
 	public HttpStatus sendFormVerifyAccount(AppProperties appProperties, UserEntity user) throws MessagingException, FileNotFoundException;
 	
+	public HttpStatus sendFormResetPassword(AppProperties appProperties, UserEntity user) throws MessagingException, FileNotFoundException;
+	
 }

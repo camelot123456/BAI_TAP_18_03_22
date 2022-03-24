@@ -56,6 +56,7 @@ public class UserService implements IUserService{
 		// TODO Auto-generated method stub
 		if (user.getUsername() != null && !userRepo.existsByUsername(user.getUsername())) {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			user.setEnabled(true);
 			UserEntity userNew = userRepo.save(user);
 			userRoleServ.addUserToRole(
 					userNew.getId(), 
@@ -116,9 +117,11 @@ public class UserService implements IUserService{
 				u.setUsername((String) record[2]);
 				u.setIdRole((BigInteger) record[3]);
 				u.setCode((String) record[4]);
+				u.setEmail((String) record[6]);
 				users.add(u);
 			}
 		}
+		
 		return users;
 	}
 

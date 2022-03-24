@@ -9,4 +9,12 @@ const doRegister = (loginForm) => {
     return httpCommon().post(`${URL_BASE}/pub/register`, loginForm)
 }
 
-export default {doLogin, doRegister}
+const doEmailSent = (data) => {
+    return httpCommon().post(`${URL_BASE}/pub/forgotPassword`, data)
+}
+
+const doChangePassword = (data) => {
+    return httpCommon().post(`${URL_BASE}/pub/changePassword`, data)
+}
+
+export default {doLogin, doRegister, doEmailSent, doChangePassword}
