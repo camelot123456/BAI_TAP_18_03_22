@@ -10,6 +10,7 @@ import lombok.Setter;
 public class AppProperties {
 
 	private final Gmail gmail = new Gmail();
+	private final Paypal paypal = new Paypal();
 	
 	@Getter
 	@Setter
@@ -18,6 +19,14 @@ public class AppProperties {
 		private String verifyUrl;
 		private String pathHtmlFormVerify;
 		private String resetPasswordUrl;
+	}
+	
+	@Getter
+	@Setter
+	public static final class Paypal {
+		private String mode;
+		private String clientId;
+		private String secret;
 	}
 	
 }

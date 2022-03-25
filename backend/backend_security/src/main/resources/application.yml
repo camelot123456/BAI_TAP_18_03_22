@@ -26,11 +26,15 @@ spring:
           auth: true
           starttls:
             enable: true
-
-  
+            
 app:
   gmail: 
     emailSystem: nguyensybao1403@gmail.com
     verifyUrl: http://localhost:8081/pub/verifyUrl?otpCode=
     pathHtmlFormVerify: src/main/resources/static
     resetPasswordUrl: http://localhost:3000/auth/resetPassword?otpCode=
+    
+  paypal:
+    mode: sandbox
+    clientId: AdL3P3CLxR_9A586FOvg5272xN5NMGpNvVDE6CZY_MXjjuPuCHvnr0PM5WhuY0SSvIR2Yxw9yijq3rCt
+    secret: EDNGp3bTO1GNOcrkQSLvJQ0YlPK8MYwuJM80uwe8FWjw9_ILtBHPNGw90xz8T9aoZR66lGLOd66FWS1u

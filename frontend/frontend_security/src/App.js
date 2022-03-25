@@ -20,6 +20,7 @@ import ForgotPassword from "./pages/auth/bodys/ForgotPassword";
 import EmailSent from "./pages/auth/bodys/EmailSent";
 import FormResetPassword from "./pages/auth/bodys/FormResetPassword";
 import PasswordChanged from "./pages/auth/bodys/PasswordChanged";
+import Checkout from "./pages/home/bodys/payment/Checkout";
 
 function App() {
   return (
@@ -47,10 +48,10 @@ function App() {
         <Route path="/" element={<MainLayout />}>
 
           <Route path="" element={<HomeLayout />}>
-            <Route path="home" element={<Home />}></Route>
-          </Route>
-
-          <Route path="" element={<HomeLayout />}>
+            <Route path="home" element={<Home />}>
+              <Route path="checkout" element={<Checkout />}></Route>
+            </Route>
+            
             <Route path="error403" element={<PageError403 />}></Route>
           </Route>
 

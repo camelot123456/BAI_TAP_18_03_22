@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.itdragon.entity.RoleEntity;
 import com.itdragon.entity.UserEntity;
@@ -100,7 +101,7 @@ public class UserService implements IUserService{
 			userRepo.deleteById(id);
 			return HttpStatus.OK;
 		}
-		return HttpStatus.FORBIDDEN;
+		throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cause description here");
 	}
 
 	@Override
