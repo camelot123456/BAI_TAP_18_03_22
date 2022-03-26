@@ -1,27 +1,23 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import parseJwt from "../../../commons/jwt-common";
-import { ACCESS_TOKEN, KEY_AUTH } from "../../../constants/system-constant";
+import { ACCESS_TOKEN } from "../../../constants/system-constant";
 import '../../../App.css'
+import { useDispatch, useSelector } from "react-redux";
+import { removeAuth } from "../../../redux/actions/auth-action";
 
 function Header () {
 
-    const ref = useRef('');
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const authProvider = useSelector(state => state.authReducer.authProvider)
 
-    try {
-        const token = localStorage.getItem(ACCESS_TOKEN).substring(KEY_AUTH.length)
-
-        if (parseJwt(token)) {
-            ref.current = parseJwt(token)
-        }
-    } catch (error) {
-        navigate("/auth/login")
-    }
+    const accessToken = parseJwt(authProvider.accessToken)
 
     const doLogout = (e) => {
         e.preventDefault()
         localStorage.removeItem(ACCESS_TOKEN)
+        dispatch(removeAuth())
         navigate('/auth/login')
     }
 
@@ -32,9 +28,9 @@ function Header () {
                 <Link style={{marginRight: '16px'}} to="/admin">Admin</Link>
             </div>
 
-            {ref.current ? (
+            {accessToken ? (
                 <div>
-                    <span>Hello, {ref.current.sub}     </span>
+                    <span>Hello, {accessToken.sub}     </span>
                     <a href="#" onClick={(e)=>doLogout(e)}>Logout</a>
                 </div>
             ) : (

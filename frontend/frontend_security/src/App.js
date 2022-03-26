@@ -21,6 +21,9 @@ import EmailSent from "./pages/auth/bodys/EmailSent";
 import FormResetPassword from "./pages/auth/bodys/FormResetPassword";
 import PasswordChanged from "./pages/auth/bodys/PasswordChanged";
 import Checkout from "./pages/home/bodys/payment/Checkout";
+import PaymentCancel from "./pages/home/bodys/payment/PaymentCancel";
+import ReviewPayment from "./pages/home/bodys/payment/ReviewPayment";
+import PaymentDone from "./pages/home/bodys/payment/PaymentDone";
 
 function App() {
   return (
@@ -48,6 +51,9 @@ function App() {
         <Route path="/" element={<MainLayout />}>
 
           <Route path="" element={<HomeLayout />}>
+            <Route path="paypal/cancel" element={<PaymentCancel />}></Route>
+            <Route path="paypal/reviewPayment" element={<ReviewPayment />}></Route>
+            <Route path="paypal/paymentDone" element={<PaymentDone />}></Route>
             <Route path="home" element={<Home />}>
               <Route path="checkout" element={<Checkout />}></Route>
             </Route>

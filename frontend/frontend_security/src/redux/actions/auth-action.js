@@ -24,6 +24,26 @@ export const doLogin = (loginForm) => (dispatch) => {
     })
 }
 
+export const setAuth = (token) => {
+    return {
+        type: authTypes.SET_AUTH,
+        payload: {
+            authProvider: {
+                accessToken: token
+            }
+        }
+    }
+}
+
+export const removeAuth = () => {
+    return {
+        type: authTypes.REMOVE_AUTH,
+        payload: {
+            authProvider: {}
+        }
+    }
+}
+
 export const doRegister = (loginForm) => (dispatch) => {
     return new Promise((resolve, reject) => {
         authService.doRegister(loginForm)
