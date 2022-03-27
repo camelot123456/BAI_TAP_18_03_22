@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "[transactions]")
+//@Entity
+//@Table(name = "[transactions]")
 public class TransactionEntity {
 	
 	@Id

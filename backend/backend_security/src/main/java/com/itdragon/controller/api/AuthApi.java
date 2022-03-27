@@ -38,6 +38,8 @@ public class AuthApi {
 		Map<String , Object> res = new HashMap<String, Object>();
 		res.put("keyAuth", "itdragon");
 		res.put("accessToken", authServ.doLogin(user));
+		res.put("clientId", appProperties.getPaypal().getClientId());
+		res.put("secret", appProperties.getPaypal().getSecret());
 		return ResponseEntity.ok().body(res);
 	}
 	

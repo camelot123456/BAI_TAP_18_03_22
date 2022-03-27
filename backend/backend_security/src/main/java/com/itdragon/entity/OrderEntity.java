@@ -24,8 +24,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "[orders]")
+//@Entity
+//@Table(name = "[orders]")
 public class OrderEntity {
 
 	@Id

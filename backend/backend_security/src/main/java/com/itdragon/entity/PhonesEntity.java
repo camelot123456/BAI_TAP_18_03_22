@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "[phones]")
+//@Entity
+//@Table(name = "[phones]")
 public class PhonesEntity {
 
 	@Column(name = "[country_code_phone]", columnDefinition = "varchar(5)")

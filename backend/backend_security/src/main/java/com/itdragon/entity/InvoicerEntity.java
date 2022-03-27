@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "[invoicers]")
+//@Entity
+//@Table(name = "[invoicers]")
 public class InvoicerEntity {
 
 	@Id

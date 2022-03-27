@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "[primary_recipients]")
+//@Entity
+//@Table(name = "[primary_recipients]")
 public class PrimaryRecipientsEntity {
 
 	@Id

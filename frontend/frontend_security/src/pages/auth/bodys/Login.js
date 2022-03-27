@@ -1,17 +1,20 @@
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {Link, useNavigate} from "react-router-dom"
 import * as Yup from 'yup'
 
 import "../../../App.css";
 import { doLogin } from "../../../redux/actions/auth-action";
+import { doOauth2Paypal } from "../../../redux/actions/paypal-action";
 
 
 function Login() {
   const [error, setError] = useState("")
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const auth = useSelector(state => state.authReducer.authProvider)
   
   const initialValues = {
     username: '',
@@ -34,8 +37,8 @@ function Login() {
             navigate("/home")
         })
         .catch(() => {
-            navigate("/auth/login")
-            setError('Incorrect Username or Password.')
+          navigate("/auth/login")
+          setError('Incorrect Username or Password.')
         })
       }}>
       {(formikProps) => {
