@@ -3,7 +3,8 @@ import paypalType from '../types/paypal-type'
 const initialState = {
     accessToken: null,
     tokenType: null,
-    responseOrder: {}
+    responseOrder: {},
+    responseCreateOrder: {}
 
 
 }
@@ -11,11 +12,11 @@ const initialState = {
 const paypalReducer = (state = initialState, { type, payload }) => {
     switch (type) {
         case paypalType.DO_CREATE_ORDER:
-            var responseOrder = { ...state.responseOrder }
-            responseOrder = payload.responseOrder
+            var responseCreateOrder = { ...state.responseCreateOrder }
+            responseCreateOrder = payload.responseCreateOrder
             return {
-                ...state.responseOrder,
-                responseOrder
+                ...state,
+                responseCreateOrder
             }
     
         default:

@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,8 +18,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//@Entity
-//@Table(name = "[items]")
+@Entity
+@Table(name = "[items]")
 public class ItemsEntity {
 
 	@Id
@@ -27,14 +29,16 @@ public class ItemsEntity {
 	@Column(name = "[quantity]", columnDefinition = "int")
 	private Integer quantity;
 	
-	@Column(name = "[description]", columnDefinition = "nvarchar(max)")
-	private String description;
+	@Column(name = "[price]", columnDefinition = "float")
+	private Double price;
 	
 	@ManyToOne
-	@JoinColumn(name = "[id_product]")
+	@JoinColumn(name = "id_product")
+	@JsonBackReference("product-items")
 	private ProductEntity product;
 	
 	@ManyToOne
-	@JoinColumn(name = "[id_order]")
+	@JoinColumn(name = "id_order")
+	@JsonBackReference("order-items")
 	private OrderEntity order;
 }

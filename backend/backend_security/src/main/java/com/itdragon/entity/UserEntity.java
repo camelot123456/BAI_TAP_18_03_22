@@ -55,6 +55,10 @@ public class UserEntity {
 	@JsonManagedReference("user-cart")
 	private List<CartEntity> carts;
 	
+	@OneToMany(mappedBy = "user")
+	@JsonManagedReference("user-order")
+	private List<OrderEntity> orders;
+	
 //	Transient
 	
 	@Transient

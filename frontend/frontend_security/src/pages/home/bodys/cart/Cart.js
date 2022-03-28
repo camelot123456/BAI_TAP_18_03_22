@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {useNavigate} from "react-router-dom"
 import parseJwt from "../../../../commons/jwt-common";
-import { doDeleteProductCart, showProductCart } from "../../../../redux/actions/cart-action";
+import { doCountProductOfCart, doDeleteProductCart, showProductCart } from "../../../../redux/actions/cart-action";
 
 function Cart () {
 
@@ -20,6 +20,7 @@ function Cart () {
     const handleDeleteProduct = (idProductCart) => {
         dispatch(doDeleteProductCart(idProductCart))
         .then(() => {
+            dispatch(doCountProductOfCart(accessToken.sub))
             dispatch(showProductCart(accessToken.sub))
         })
     }

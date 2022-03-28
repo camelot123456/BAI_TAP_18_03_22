@@ -19,8 +19,13 @@ export const doCreateOrder = (payload) => (dispatch) => {
     return new Promise((resolve, reject) => {
         paypalService.createOrder(payload)
         .then((res) => {
-            console.log(res.data)
             if (res.status === 201) {
+                dispatch({
+                    type: paypalType.DO_CREATE_ORDER,
+                    payload: {
+                        responseCreateOrder: res.data
+                    }
+                })
                 res.data.links.forEach((link) => {
                     if (link.rel === 'approve') {
                         window.open(`${link.href}`)

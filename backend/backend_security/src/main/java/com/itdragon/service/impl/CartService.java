@@ -40,10 +40,15 @@ public class CartService implements ICartService{
 		// TODO Auto-generated method stub
 		UserEntity user = userRepo.findByUsername(username);
 		int res = 0;
-		for (ProductCart pc : user.getCarts().get(0).getProductCartArr()) {
-			res += pc.getQuantity();
+		try {
+			for (ProductCart pc : user.getCarts().get(0).getProductCartArr()) {
+				res += pc.getQuantity();
+			}
+			return res;
+		} catch (NullPointerException e) {
+			// TODO: handle exception
+			return 0;
 		}
-		return res;
 	}
 
 }

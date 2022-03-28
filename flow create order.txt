@@ -1,0 +1,22 @@
+1/ fe:click btn 'mua hàng' sẽ link sang trang hiển thị bảng chọn và xác nhận sản phẩm cần mua
+
+2.1/ fe:click btn 'mua hàng' sẽ gửi request create order cho paypal
+2.2/ fe:sau khi tạo thành công paypal sẽ phản hồi thông báo và các links
+
+3/ be:tạo bảng order và thêm các items được chọn
+
+
+
+5.1/ fe:click approved chuyển hướng sang trang xác nhận hóa đơn của paypal
+5.2/ fe:nếu cancel thì xóa order và items phía be 
+5.3/ fe:nếu xác nhận tiếp tục thì sẽ chuyển sang trang review payment
+5.4/ fe:ở trang review payment, kiểm tra và cập nhập thông tin payer, shipping, address
+5.4/ be:thêm thông tin payer, shipping, address vào database order
+
+6.1/ fe:authorize payment for order
+6.2/ fe:nếu quá hạn thì reauthorize 
+
+7/ fe:click thanh toán hiển thị trang thanh toán thành công
+
+8/ be:update order state and time
+9/ be:update transaction

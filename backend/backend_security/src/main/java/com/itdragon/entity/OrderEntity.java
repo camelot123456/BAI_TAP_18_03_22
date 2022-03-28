@@ -5,15 +5,21 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.itdragon.entity.enums.EOrderIntent;
 import com.itdragon.entity.enums.EOrderState;
 
@@ -24,8 +30,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//@Entity
-//@Table(name = "[orders]")
+@EntityListeners(AuditingEntityListener.class)
+@Entity
+@Table(name = "[orders]")
 public class OrderEntity {
 
 	@Id
@@ -46,50 +53,47 @@ public class OrderEntity {
 	@Column(name = "[create_time]", columnDefinition = "datetime")
 	private Date createTime;
 	
-//	------------------------------- amount -----------------------------------
+//	------------------------------- purchase_units -----------------------------------
 	
-	@Column(name = "[tax_total]", columnDefinition = "varchar(255)")
-	private Double taxTotal;
+	private String idCus;
 	
-	@Column(name = "[due_amount]", columnDefinition = "float")
-	private Double dueAmount;
+	private String nameCus;
 	
-	@Column(name = "[item_total]", columnDefinition = "float")
-	private Double itemTotal;
+	private String addLine1Cus;
 	
-	@Column(name = "[custom_label]", columnDefinition = "nvarchar(255)")
-	private String customLabel;
+	private String addLine2Cus;
 	
-	@Column(name = "[custom_total]", columnDefinition = "float")
-	private Double customTotal;
+	private String adArea1;
 	
-	@Column(name = "[shipping_total]", columnDefinition = "float")
-	private Double shippingTotal;
+	private String adArea2;
 	
-	@Column(name = "[shipping_tax_percent]", columnDefinition = "float")
-	private Double shippingTaxPercent;
+	private String posCode;
 	
-	@Column(name = "[shipping_tax_total]", columnDefinition = "float")
-	private Double shippingTaxTotal;
+	private String couCode;
 	
-	@Column(name = "[item_discount]", columnDefinition = "float")
-	private Double itemDiscount;
+//	------------------------------- payment authorizations -----------------------------------
+	private String payAuthStatus;
 	
-	@Column(name = "[invoice_discount_percent]", columnDefinition = "float")
-	private Double invoiceDiscountPercent;
+	private String payAuthId;
 	
-	@Column(name = "[invoice_discount_total]", columnDefinition = "float")
-	private Double invoiceDiscountTotal;
+	private String payAuthAmount;
 	
+	private Date payAuthExpTime;
+	
+	private Date payAuthCreTime;
+	
+	private Date payAuthUpdTime;
+		
 //	------------------------------- relationship -----------------------------------	
 	
-	@OneToOne
-	private InvoicerEntity invoicer;
 	
-	@OneToMany
-	private List<PrimaryRecipientsEntity> recipientsEntities;
+	@ManyToOne
+	@JoinColumn(name = "[id_user]")
+	@JsonBackReference("user-order")
+	private UserEntity user;
 	
-	@OneToMany
+	@OneToMany(mappedBy = "order")
+	@JsonManagedReference("order-items")
 	private List<ItemsEntity> items;
 	
 }

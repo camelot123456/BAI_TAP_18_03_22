@@ -1,5 +1,7 @@
 package com.itdragon.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -8,11 +10,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,4 +49,13 @@ public class ProductCart {
 	@JoinColumn(name = "id_cart")
 	@JsonBackReference("cart-product_cart")
 	private CartEntity cart;
+	
+	@ManyToOne
+	@JoinColumn(name = "id_order")
+	@JsonBackReference("order-product_order")
+	private OrderEntity order;
+	
+	@OneToMany(mappedBy = "product")
+	@JsonManagedReference("product-items")
+	private List<ItemsEntity> items;
 }

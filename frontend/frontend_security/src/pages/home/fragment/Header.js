@@ -20,7 +20,7 @@ function Header () {
         if (accessToken) {
             dispatch(doCountProductOfCart(accessToken.sub))
         }
-    }, [cartTotal])
+    }, [])
 
     const doLogout = (e) => {
         e.preventDefault()
@@ -39,7 +39,7 @@ function Header () {
 
             {accessToken ? (
                 <div>
-                    <Link to="/cart"><span>cart({cartTotal})</span></Link>
+                    <Link to="/cart"><span>cart({cartTotal || 0})</span></Link>
                     {'    '}
                     <span>Hello, {accessToken.sub}     </span>
                     <a href="#" onClick={(e)=>doLogout(e)}>Logout</a>
