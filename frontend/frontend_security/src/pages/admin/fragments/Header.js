@@ -25,6 +25,7 @@ function Header () {
     return (
         <div className="header">
             <div>
+                <Link style={{marginRight: '16px'}} to="/home">Home</Link>
                 <Link style={{marginRight: '16px'}} to="/admin">Admin</Link>
                 <Link style={{marginRight: '16px'}} to="/admin/users">User Management</Link>
                 <Link style={{marginRight: '16px'}} to="/admin/roles">Role Management</Link>

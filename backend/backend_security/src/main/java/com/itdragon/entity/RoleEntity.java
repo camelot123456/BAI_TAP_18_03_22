@@ -35,7 +35,7 @@ public class RoleEntity {
 	private Integer rank;
 	
 	@OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
-	@JsonManagedReference("role")
+	@JsonManagedReference("role-user_role")
 	private List<UserRoleEntity> userRoleArr;
 	
 }

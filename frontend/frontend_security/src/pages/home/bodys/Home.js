@@ -5,7 +5,7 @@ function Home () {
     return (
         <>
             <h1>This is Home Page</h1>
-            <Link to="/home/checkout">Checkout</Link>
+            {/* <Link to="/home/checkout">Checkout</Link> */}
 
             <Outlet />
         </>

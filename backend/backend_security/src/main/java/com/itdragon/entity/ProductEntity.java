@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,13 +19,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//@Entity
-//@Table(name = "[products]")
+@Entity
+@Table(name = "[products]")
 public class ProductEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private String id;
+	private Long id;
 	
 	@Column(name = "[name]", columnDefinition = "nvarchar(256)")
 	private String name;
@@ -40,7 +42,11 @@ public class ProductEntity {
 	@Column(name = "[currency_code]", columnDefinition = "char(3)")
 	private String currencyCode;
 	
+	@OneToMany(mappedBy = "product")
+	@JsonManagedReference("product-product_cart")
+	private List<ProductCart> productCartArr;
 	
-	@OneToMany
-	private List<ItemsEntity> items;
+	
+//	@OneToMany
+//	private List<ItemsEntity> items;
 }

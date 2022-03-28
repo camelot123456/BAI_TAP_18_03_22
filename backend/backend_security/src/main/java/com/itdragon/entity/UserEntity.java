@@ -48,8 +48,12 @@ public class UserEntity {
 	private String password;
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-	@JsonManagedReference("user")
+	@JsonManagedReference("user-user_role")
 	private List<UserRoleEntity> userRoleArr;
+	
+	@OneToMany(mappedBy = "user")
+	@JsonManagedReference("user-cart")
+	private List<CartEntity> carts;
 	
 //	Transient
 	

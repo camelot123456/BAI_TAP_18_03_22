@@ -27,12 +27,12 @@ public class UserRoleEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "id_user")
-	@JsonBackReference("user")
+	@JsonBackReference("user-user_role")
 	private UserEntity user;
 	
 	@ManyToOne
 	@JoinColumn(name = "id_role")
-	@JsonBackReference("role")
+	@JsonBackReference("role-user_role")
 	private RoleEntity role;
 	
 }

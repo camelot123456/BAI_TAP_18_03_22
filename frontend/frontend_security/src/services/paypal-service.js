@@ -1,5 +1,5 @@
 import {httpPaypal} from '../commons/http-paypal'
-import { URL_PAYPAL } from '../constants/system-constant'
+import { ACCESS_TOKEN_PAYPAL, URL_PAYPAL } from '../constants/system-constant'
 import axios from 'axios'
 
 const oauth2Paypal = (auth) => {
@@ -20,4 +20,18 @@ const oauth2Paypal = (auth) => {
     })
 }
 
-export default {oauth2Paypal}
+const createOrder = (payload) => {
+    const token = localStorage.getItem(ACCESS_TOKEN_PAYPAL)
+    return axios.request({
+        url: `/v2/checkout/orders`,
+        method: 'POST',
+        baseURL: URL_PAYPAL,
+        data: payload,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    })
+}
+
+export default {oauth2Paypal, createOrder}

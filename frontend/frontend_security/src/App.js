@@ -24,6 +24,9 @@ import Checkout from "./pages/home/bodys/payment/Checkout";
 import PaymentCancel from "./pages/home/bodys/payment/PaymentCancel";
 import ReviewPayment from "./pages/home/bodys/payment/ReviewPayment";
 import PaymentDone from "./pages/home/bodys/payment/PaymentDone";
+import ProductList from "./pages/home/bodys/product/ProductList";
+import Cart from "./pages/home/bodys/cart/Cart";
+import PaymentInfo from "./pages/home/bodys/payment/PaymentInfo";
 
 function App() {
   return (
@@ -54,8 +57,11 @@ function App() {
             <Route path="paypal/cancel" element={<PaymentCancel />}></Route>
             <Route path="paypal/reviewPayment" element={<ReviewPayment />}></Route>
             <Route path="paypal/paymentDone" element={<PaymentDone />}></Route>
+            <Route path="payment" element={<PaymentInfo />}></Route>
+            <Route path="cart" element={<Cart />}/>
             <Route path="home" element={<Home />}>
-              <Route path="checkout" element={<Checkout />}></Route>
+              <Route path="" element={<ProductList />}/>
+              {/* <Route path="checkout" element={<Checkout />}></Route> */}
             </Route>
             
             <Route path="error403" element={<PageError403 />}></Route>

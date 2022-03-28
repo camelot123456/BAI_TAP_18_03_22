@@ -5,6 +5,7 @@ import {Link, useNavigate} from "react-router-dom"
 import * as Yup from 'yup'
 
 import "../../../App.css";
+import { CLIENT_ID, SECRET } from "../../../constants/system-constant";
 import { doLogin } from "../../../redux/actions/auth-action";
 import { doOauth2Paypal } from "../../../redux/actions/paypal-action";
 
@@ -34,6 +35,10 @@ function Login() {
           password: values.password
         }))
         .then(() => {
+            dispatch(doOauth2Paypal({
+              clientId: CLIENT_ID, 
+              secret: SECRET
+            }))
             navigate("/home")
         })
         .catch(() => {
