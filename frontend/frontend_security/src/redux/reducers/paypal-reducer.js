@@ -5,7 +5,9 @@ const initialState = {
     tokenType: null,
     responseOrder: {},
     responseCreateOrder: {},
-    orderApproved: {}
+    orderApproved: {},
+    orderAuthorize: {},
+    orderCapture: {}
 
 }
 
@@ -25,7 +27,20 @@ const paypalReducer = (state = initialState, { type, payload }) => {
                 ...state,
                 orderApproved
             }
-    
+        case paypalType.AUTHORIZE_PAYMENT_FOR_ORDER:
+            var orderAuthorize = { ...state.orderAuthorize }
+            orderAuthorize = payload.orderAuthorize
+            return {
+                ...state,
+                orderAuthorize
+            }
+        case paypalType.SHOW_AUTHORIZE_PAYMENT:
+            var orderCapture = { ...state.orderCapture }
+            orderCapture = payload.orderCapture
+            return {
+                ...state,
+                orderCapture
+            }
         default:
             return state;
     }

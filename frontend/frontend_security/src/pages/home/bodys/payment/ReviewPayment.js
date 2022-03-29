@@ -1,63 +1,68 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { doCreateOrder } from "../../../../redux/actions/order-action";
-import { showOrder } from "../../../../redux/actions/paypal-action";
+import { useNavigate } from "react-router-dom";
+import { doAuthorizePaymentForOrder, showOrder } from "../../../../redux/actions/paypal-action";
+import { doCreateOrder } from '../../../../redux/actions/order-action'
 
 function ReviewPayment() {
-  const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
   const navigate = useNavigate()
 
   const [orderCreate, setorderCreate] = useState(JSON.parse(localStorage.getItem("orderCreate")))
   const [orderPaypal, setOrderPaypal] = useState(JSON.parse(localStorage.getItem("orderPaypal")))
+  const [orderAuthorize, setOrderAuthorize] = useState(JSON.parse(localStorage.getItem("orderAuthorize")))
   const orderApproved = useSelector((state) => state.paypalReducer.orderApproved)
 
-  console.log({
-    orderCreate: orderCreate,
-    orderPaypal: orderPaypal,
-    orderApproved: orderApproved
-  })
+  // console.log({
+  //   orderCreate: orderCreate,
+  //   orderPaypal: orderPaypal,
+  //   orderApproved: orderApproved,
+  //   orderAuthorize: orderAuthorize
+  // })
 
   useEffect(() => {
     dispatch(showOrder(orderCreate.id))
   }, []) 
 
-  // useEffect(() => {
-  //   var payload = {
-  //     idOrder: orderCreate.id,
-  //     intent: orderPaypal.intent,
-  //     status: orderCreate.status,
-  //     // createTime: '',
-
-  //     referenceId: '',
-  //     nameShippingCus: '',
-  //     addLine1Cus: '',
-  //     addLine2Cus: '',
-  //     adArea1: '',
-  //     adArea2: '',
-  //     posCode: '',
-  //     couCode: '',
-
-  //     payAuthStatus: '',
-  //     payAuthId: '',
-  //     payAuthamount: '',
-  //     payAuthExpTime: '',
-  //     payAuthCreTime: '',
-  //     payAuthUpdTime: '',
-
-  //     givenNamePayer: '',
-  //     surnamePayer: '',
-  //     emailSurname: '',
-  //     idPayer: '',
-  //     couCodePayer: '',
-
-  //   }
-  //   dispatch(doCreateOrder())
-  // }, [])
-
   const handleAuthorize = (idOrder) => {
-    
+    dispatch(doAuthorizePaymentForOrder(idOrder))
+    .then(() => {
+      var payload = {
+        idOrder: orderApproved.id,
+        intent: orderApproved.intent,
+        status: orderApproved.status,
+        createTime: orderApproved.create_time,
+  
+        referenceId: orderApproved.purchase_units[0].reference_id,
+        nameShippingCus: orderApproved.purchase_units[0].shipping.name.full_name,
+        addLine1Cus: orderApproved.purchase_units[0].shipping.address.address_line_1,
+        addLine2Cus: orderApproved.purchase_units[0].shipping.address.address_line_2,
+        adArea1: orderApproved.purchase_units[0].shipping.address.admin_area_1,
+        adArea2: orderApproved.purchase_units[0].shipping.address.admin_area_2,
+        posCode: orderApproved.purchase_units[0].shipping.address.postal_code,
+        couCode: orderApproved.purchase_units[0].shipping.address.country_code,
+  
+        // payAuthStatus: '',
+        // payAuthId: '',
+        // payAuthamount: '',
+        // payAuthExpTime: '',
+        // payAuthCreTime: '',
+        // payAuthUpdTime: '',
+        // items: orderApproved.purchase_units[0].items
+  
+        givenNamePayer: orderApproved.payer.name.given_name,
+        surnamePayer: orderApproved.payer.name.surname,
+        emailPayer: orderApproved.payer.email_address,
+        idPayer: orderApproved.payer.payer_id,
+        couCodePayer: orderApproved.payer.address.country_code,
+  
+      }
+      console.log(payload)
+      dispatch(doCreateOrder(payload))
+      .then(() => {
+        navigate('/capture')
+      })
+    })
   }
 
   return (

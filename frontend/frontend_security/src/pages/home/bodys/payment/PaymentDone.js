@@ -4,14 +4,14 @@ import { useSearchParams } from 'react-router-dom';
 
 function PaymentDone () {
 
-    const transaction = useSelector((state) => state.paymentReducer.transaction);
-    const payerInfo = useSelector((state) => state.paymentReducer.payerInfo);
+    // const transaction = useSelector((state) => state.paymentReducer.transaction);
+    // const payerInfo = useSelector((state) => state.paymentReducer.payerInfo);
 
     
     return (
         <>
             <h3>Payment Done. Thank you for purchasing our products</h3>
-            <table>
+            {/* <table>
             <tbody>
             <tr>
                 <th colSpan="2">Transaction Details</th>
@@ -38,7 +38,7 @@ function PaymentDone () {
             </tr>
 
             </tbody>
-        </table>
+        </table> */}
         </>
     )
 }

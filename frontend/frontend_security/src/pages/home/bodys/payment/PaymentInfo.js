@@ -36,6 +36,7 @@ function PaymentInfo() {
       intent: "AUTHORIZE",
       purchase_units: [
         {
+          invoice_id: `INVOICE_${referenceId}`,
           reference_id: referenceId,
           amount: {
             currency_code: "USD",
@@ -63,10 +64,18 @@ function PaymentInfo() {
       },
     };
 
-    dispatch(doCreateOrderPaypal(data))
-    .then(() => {
-      localStorage.setItem("orderPaypal", JSON.stringify(data))
-    })
+    // dispatch(doCreateOrderPaypal(data))
+    // .then(() => {
+    //   localStorage.setItem("orderPaypal", JSON.stringify(data))
+    // })
+    dispatch(doCreateOrder({
+      // id: data.purchase_units[0].invoice_id,
+      description: data.purchase_units[0].description,
+      intent: data.intent,
+      // items: productCart,
+      total: data.purchase_units[0].amount.value,
+      currencyCode: data.purchase_units[0].amount.currency_code
+    }))
   };
 
   return (

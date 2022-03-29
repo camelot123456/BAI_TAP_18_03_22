@@ -47,11 +47,22 @@ const showOrder = (idOrder) => {
     })
 }
 
-const showAuthorizePayment = (idOrder) => {
+const doAuthorizePayment = (idOrder) => {
+    const token = localStorage.getItem(ACCESS_TOKEN_PAYPAL)
+    return axios.post(`${URL_PAYPAL}/v2/checkout/orders/${idOrder}/authorize`,
+        null,
+        {headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }}
+    )
+}
+
+const showOrderAuthorize = (idOrder) => {
     const token = localStorage.getItem(ACCESS_TOKEN_PAYPAL)
     return axios.request({
-        url: `/v2/checkout/orders/${idOrder}/authorize`,
-        method: 'POST',
+        url: `/v2/payments/authorizations/${idOrder}`,
+        method: 'GET',
         baseURL: URL_PAYPAL,
         headers: {
             'Content-Type': 'application/json',
@@ -60,4 +71,19 @@ const showAuthorizePayment = (idOrder) => {
     })
 }
 
-export default {oauth2Paypal, createOrder, showOrder, showAuthorizePayment}
+const doCapturePayment = (idOrder, payload) => {
+    console.log(payload)
+    const token = localStorage.getItem(ACCESS_TOKEN_PAYPAL)
+    return axios.request({
+        url: `/v2/payments/authorizations/${idOrder}/capture`,
+        method: 'POST',
+        baseURL: URL_PAYPAL,
+        data: payload,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    })
+}
+
+export default {oauth2Paypal, createOrder, showOrder, doAuthorizePayment, showOrderAuthorize, doCapturePayment}

@@ -29,7 +29,7 @@ export const doCreateOrderPaypal = (payload) => (dispatch) => {
                 })
                 res.data.links.forEach((link) => {
                     if (link.rel === 'approve') {
-                        window.open(`${link.href}`)
+                        window.location.replace(`${link.href}`)
                     }
                 })
             }
@@ -52,6 +52,55 @@ export const showOrder = (idOrder) => (dispatch) => {
                     orderApproved: res.data
                 }
             })
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+export const doAuthorizePaymentForOrder = (idOrder) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        paypalService.doAuthorizePayment(idOrder)
+        .then((res) => {
+            localStorage.setItem('orderAuthorize', JSON.stringify(res.data))
+            dispatch({
+                type: paypalType.AUTHORIZE_PAYMENT_FOR_ORDER,
+                payload: {
+                    orderAuthorize: res.data
+                }
+            })
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+export const showOrderAuthorize = (idOrder) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        paypalService.showOrderAuthorize(idOrder)
+        .then((res) => {
+            dispatch({
+                type: paypalType.SHOW_AUTHORIZE_PAYMENT,
+                payload: {
+                    orderCapture: res.data
+                }
+            })
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+export const doCapturePayment = (idOrder, payload) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        paypalService.doCapturePayment(idOrder, payload)
+        .then((res) => {
             resolve()
         })
         .catch((err) => {

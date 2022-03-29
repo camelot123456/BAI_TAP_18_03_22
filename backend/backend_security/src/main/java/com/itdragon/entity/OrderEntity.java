@@ -52,6 +52,12 @@ public class OrderEntity {
 	
 	@Column(name = "[create_time]", columnDefinition = "datetime")
 	private Date createTime;
+
+	@Column(name = "[total_item]", columnDefinition = "float")
+	private Double total;
+	
+	@Column(name = "[currency_code]", columnDefinition = "char(3)")
+	private Double currencyCode;
 	
 //	------------------------------- purchase_units -----------------------------------
 	
@@ -108,7 +114,7 @@ public class OrderEntity {
 	private String surnamePayer;
 	
 	@Column(name = "email_payer", columnDefinition = "varchar(254)")
-	private String emailSurname;
+	private String emailPayer;
 	
 	@Column(name = "id_payer", columnDefinition = "varchar(13)")
 	private String idPayer;
@@ -117,7 +123,6 @@ public class OrderEntity {
 	private String couCodePayer;
 	
 //	------------------------------- relationship -----------------------------------	
-	
 	
 	@ManyToOne
 	@JoinColumn(name = "[id_user]")
@@ -128,4 +133,7 @@ public class OrderEntity {
 	@JsonManagedReference("order-items")
 	private List<ItemsEntity> items;
 	
+//	------------------------------- transient -----------------------------------		
+
+
 }

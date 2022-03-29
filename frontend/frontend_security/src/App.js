@@ -27,6 +27,7 @@ import PaymentDone from "./pages/home/bodys/payment/PaymentDone";
 import ProductList from "./pages/home/bodys/product/ProductList";
 import Cart from "./pages/home/bodys/cart/Cart";
 import PaymentInfo from "./pages/home/bodys/payment/PaymentInfo";
+import CapturePayment from "./pages/home/bodys/payment/CapturePayment";
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
             <Route path="paypal/reviewPayment" element={<ReviewPayment />}></Route>
             <Route path="paypal/paymentDone" element={<PaymentDone />}></Route>
             <Route path="payment" element={<PaymentInfo />}></Route>
+            <Route path="capture" element={<CapturePayment />}></Route>
             <Route path="cart" element={<Cart />}/>
             <Route path="home" element={<Home />}>
               <Route path="" element={<ProductList />}/>
