@@ -16,6 +16,7 @@ const paypalReducer = (state = initialState, { type, payload }) => {
         case paypalType.DO_CREATE_ORDER:
             var responseCreateOrder = { ...state.responseCreateOrder }
             responseCreateOrder = payload.responseCreateOrder
+            console.log(payload.responseCreateOrder)
             return {
                 ...state,
                 responseCreateOrder

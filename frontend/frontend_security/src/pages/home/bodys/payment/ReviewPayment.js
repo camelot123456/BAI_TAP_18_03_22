@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { doAuthorizePaymentForOrder, showOrder } from "../../../../redux/actions/paypal-action";
+import paypalAction from "../../../../redux/actions/paypal-action";
 import { doCreateOrder } from '../../../../redux/actions/order-action'
 
 function ReviewPayment() {
@@ -21,11 +21,11 @@ function ReviewPayment() {
   // })
 
   useEffect(() => {
-    dispatch(showOrder(orderCreate.id))
+    dispatch(paypalAction.showOrder(orderCreate.id))
   }, []) 
 
   const handleAuthorize = (idOrder) => {
-    dispatch(doAuthorizePaymentForOrder(idOrder))
+    dispatch(paypalAction.doAuthorizePaymentForOrder(idOrder))
     .then(() => {
       var payload = {
         idOrder: orderApproved.id,
@@ -58,10 +58,10 @@ function ReviewPayment() {
   
       }
       console.log(payload)
-      dispatch(doCreateOrder(payload))
-      .then(() => {
-        navigate('/capture')
-      })
+      // dispatch(doCreateOrder(payload))
+      // .then(() => {
+      //   navigate('/capture')
+      // })
     })
   }
 

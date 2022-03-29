@@ -39,7 +39,7 @@ public class CartController {
 	
 	@GetMapping("/pri/cart/product_cart/{username}")
 	@Secured({"ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN"})
-	public ResponseEntity<?> doProductCart(@PathVariable("username") String username) {
+	public ResponseEntity<?> showProductCart(@PathVariable("username") String username) {
 		return ResponseEntity.ok().body(productCartServ.findAllByUsername(username));
 	}
 	
@@ -48,6 +48,12 @@ public class CartController {
 	public ResponseEntity<?> doDeleteProductCart(@PathVariable("idProductCart") Long idProductCart) {
 		productCartServ.deleteById(idProductCart);
 		return ResponseEntity.ok().body(HttpStatus.OK);
+	}
+	
+	@PostMapping("/pri/cart/payment/{username}")
+	public ResponseEntity<?> doPaymentOrder(@PathVariable("username") String username) {
+		cartServ.paymentOrder(username);
+		return ResponseEntity.ok().body("");
 	}
 	
 }

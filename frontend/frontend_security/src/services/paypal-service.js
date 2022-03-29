@@ -47,6 +47,33 @@ const showOrder = (idOrder) => {
     })
 }
 
+const doUpdateOrder = (payload) => {
+    const token = localStorage.getItem(ACCESS_TOKEN_PAYPAL)
+    return axios.request({
+        url: `/v2/checkout/orders`,
+        method: 'PATCH',
+        baseURL: URL_PAYPAL,
+        data: payload,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    })
+}
+
+const doCaptureOrder = (payload) => {
+    const token = localStorage.getItem(ACCESS_TOKEN_PAYPAL)
+    return axios.post(
+        `${URL_PAYPAL}/v2/checkout/orders/${payload}/capture`,
+        null,
+        {headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }}
+    )
+}
+
+
 const doAuthorizePayment = (idOrder) => {
     const token = localStorage.getItem(ACCESS_TOKEN_PAYPAL)
     return axios.post(`${URL_PAYPAL}/v2/checkout/orders/${idOrder}/authorize`,
@@ -86,4 +113,4 @@ const doCapturePayment = (idOrder, payload) => {
     })
 }
 
-export default {oauth2Paypal, createOrder, showOrder, doAuthorizePayment, showOrderAuthorize, doCapturePayment}
+export default {oauth2Paypal, createOrder, showOrder, doUpdateOrder, doCaptureOrder, doAuthorizePayment, showOrderAuthorize, doCapturePayment}

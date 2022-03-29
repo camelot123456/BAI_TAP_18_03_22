@@ -17,5 +17,6 @@ public class ProductPayload {
 	private Integer quantity;
 	private Double priceProduct;
 	private Double totalPrice;
+	private BigInteger idProduct;
 	
 }

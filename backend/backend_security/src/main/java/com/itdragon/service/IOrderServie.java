@@ -4,6 +4,8 @@ import com.itdragon.entity.OrderEntity;
 
 public interface IOrderServie {
 
-	public void createOrder(OrderEntity order);
+	public OrderEntity createOrder(OrderEntity order);
+	
+	public OrderEntity findByIdOrderAndIdPayer(String idOrder, String idPayer);
 	
 }

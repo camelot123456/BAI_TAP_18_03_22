@@ -1,12 +1,10 @@
 import orderType from '../types/order-type'
 import orderServ from '../../services/order-service'
 
-export const doCreateOrder = (payload) => (dispatch) => {
-    console.log(payload)
+const doCreateOrder = (payload) => (dispatch) => {
     return new Promise((resolve, reject) => {
         orderServ.doCreateOrder(payload)
         .then((response) => {
-            console.log(response.data)
             resolve()
         })
         .catch((err) => {
@@ -14,3 +12,24 @@ export const doCreateOrder = (payload) => (dispatch) => {
         })
     })
 }
+
+const showOrderDetail = (token, payerId) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        orderServ.showOrderDetail(token, payerId)
+        .then((res) => {
+            dispatch({
+                type: orderType.SHOW_ORDER_DETAIL,
+                payload: {
+                    order: res.data.order,
+                    items: res.data.items
+                }
+            })
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+export default {doCreateOrder, showOrderDetail}

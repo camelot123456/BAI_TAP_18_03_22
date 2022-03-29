@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import parseJwt from "../../../../commons/jwt-common";
 import { showProductCart } from "../../../../redux/actions/cart-action";
-import { doCreateOrderPaypal } from "../../../../redux/actions/paypal-action";
+import paypalAction from "../../../../redux/actions/paypal-action";
 import {doCreateOrder } from "../../../../redux/actions/order-action"
 
 function PaymentInfo() {
@@ -14,6 +14,7 @@ function PaymentInfo() {
   const navigate = useNavigate();
 
   const productCart = useSelector((state) => state.cartReducer.productCart);
+  const responseCreateOrder = useSelector((state) => state.cartReducer.responseCreateOrder);
 
   useEffect(() => {
     dispatch(showProductCart(accessToken.sub));
@@ -25,6 +26,7 @@ function PaymentInfo() {
       json.name = pc.nameProduct;
       json.quantity = pc.quantity;
       json.description = "Sale";
+      json.sku = pc.idProduct;
       json.unit_amount = {
         currency_code: "USD",
         value: pc.priceProduct,
@@ -33,10 +35,10 @@ function PaymentInfo() {
     });
 
     var data = {
-      intent: "AUTHORIZE",
+      intent: "CAPTURE",
       purchase_units: [
         {
-          invoice_id: `INVOICE_${referenceId}`,
+          invoice_id: referenceId,
           reference_id: referenceId,
           amount: {
             currency_code: "USD",
@@ -59,24 +61,25 @@ function PaymentInfo() {
         },
       ],
       application_context: {
-        return_url: "http://localhost:3000/paypal/reviewPayment",
-        cancel_url: "http://localhost:3000/paypal/cancel",
+        return_url: "http://localhost:3000/redirect/reviewPayment",
+        cancel_url: "http://localhost:3000/cart",
       },
     };
 
-    // dispatch(doCreateOrderPaypal(data))
-    // .then(() => {
-    //   localStorage.setItem("orderPaypal", JSON.stringify(data))
-    // })
-    dispatch(doCreateOrder({
-      // id: data.purchase_units[0].invoice_id,
-      description: data.purchase_units[0].description,
-      intent: data.intent,
-      // items: productCart,
-      total: data.purchase_units[0].amount.value,
-      currencyCode: data.purchase_units[0].amount.currency_code
-    }))
+    dispatch(paypalAction.doCreateOrderPaypal(data))
+    .then(() => {
+        localStorage.setItem("orderPaypal", JSON.stringify(data))
+    })
+    // dispatch(doCreateOrder({
+    //   idOrder: data.purchase_units[0].invoice_id,
+    //   description: data.purchase_units[0].description,
+    //   intent: data.intent,
+    //   items: productCart,
+    //   total: data.purchase_units[0].amount.value,
+    //   currencyCode: data.purchase_units[0].amount.currency_code
+    // }))
   };
+  // console.log(responseCreateOrder)
 
   return (
     <>
@@ -89,7 +92,12 @@ function PaymentInfo() {
           </tr>
           <tr>
             <td>Intent: </td>
-            <td>AUTHORIZE</td>
+            <td>
+              <select>
+                <option>CAPTURE</option>
+                <option>AUTHORIZE</option>
+              </select>
+            </td>
           </tr>
           <tr>
             <td>Reference Id: </td>

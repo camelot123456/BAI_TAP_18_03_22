@@ -90,11 +90,12 @@ public class ProductCartService implements IProductCartService {
 				pp.setAvatarUrl((String) record[3]);
 				pp.setQuantity((Integer) record[4]);
 				pp.setTotalPrice((Double) record[5]);
+				pp.setIdProduct((BigInteger)record[6]);
 				
 				productPayloads.add(pp);
 			}
 		}
-		 return productPayloads;
+		return productPayloads;
 	}
 
 	@Override

@@ -17,4 +17,8 @@ const doDeleteProductCart = (idProductCart) => {
     return httpCommon().delete(`${URL_BASE}/pri/cart/delete_product_cart/${idProductCart}`)
 }
 
-export default {doAddProductIntoCart, doCountProductOfCart, showProductCart, doDeleteProductCart}
+const doPaymentOrder = (username) => {
+    return httpCommon().post(`${URL_BASE}/pri/cart/payment/${username}`)
+}
+
+export default {doAddProductIntoCart, doCountProductOfCart, showProductCart, doDeleteProductCart, doPaymentOrder}

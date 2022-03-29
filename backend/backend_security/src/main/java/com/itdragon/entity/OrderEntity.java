@@ -57,7 +57,7 @@ public class OrderEntity {
 	private Double total;
 	
 	@Column(name = "[currency_code]", columnDefinition = "char(3)")
-	private Double currencyCode;
+	private String currencyCode;
 	
 //	------------------------------- purchase_units -----------------------------------
 	

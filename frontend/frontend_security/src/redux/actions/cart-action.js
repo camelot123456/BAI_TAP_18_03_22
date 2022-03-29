@@ -58,3 +58,13 @@ export const doDeleteProductCart = (idProductCart) => (dispatch) => {
         .catch(err => reject())
     })
 }
+
+export const doPaymentOrder = (username) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        cartService.doPaymentOrder(username)
+        .then(res => {
+            resolve()
+        })
+        .catch(err => reject())
+    })
+}

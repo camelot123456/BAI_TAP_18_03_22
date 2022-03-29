@@ -8,4 +8,6 @@ public interface ICartService {
 	
 	public int countQuantityProduct(String username);
 	
+	public void paymentOrder(String username);
+	
 }
