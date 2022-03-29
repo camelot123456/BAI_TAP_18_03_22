@@ -1,142 +1,129 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import {
-  doExecutePayment,
-  doReviewPayment,
-} from "../../../../redux/actions/payment-action";
+import { doCreateOrder } from "../../../../redux/actions/order-action";
+import { showOrder } from "../../../../redux/actions/paypal-action";
 
 function ReviewPayment() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
   const navigate = useNavigate()
 
-  const transaction = useSelector((state) => state.paymentReducer.transaction);
-  const payerInfo = useSelector((state) => state.paymentReducer.payerInfo);
-  const shippingAddress = useSelector(
-    (state) => state.paymentReducer.shippingAddress
-  );
+  const [orderCreate, setorderCreate] = useState(JSON.parse(localStorage.getItem("orderCreate")))
+  const [orderPaypal, setOrderPaypal] = useState(JSON.parse(localStorage.getItem("orderPaypal")))
+  const orderApproved = useSelector((state) => state.paypalReducer.orderApproved)
 
   console.log({
-    paymentId: searchParams.get("paymentId"),
-    token: searchParams.get("token"),
-    PayerID: searchParams.get("PayerID"),
-  });
-
-  console.log({ transaction, payerInfo, shippingAddress });
+    orderCreate: orderCreate,
+    orderPaypal: orderPaypal,
+    orderApproved: orderApproved
+  })
 
   useEffect(() => {
-    var data = {
-      paymentId: searchParams.get("paymentId"),
-      token: searchParams.get("token"),
-      PayerID: searchParams.get("PayerID"),
-    };
-    dispatch(doReviewPayment(data));
-  }, []);
+    dispatch(showOrder(orderCreate.id))
+  }, []) 
 
-  const handleExecutePayment = () => {
-    dispatch(
-      doExecutePayment({
-        paymentId: searchParams.get("paymentId"),
-        PayerID: searchParams.get("PayerID"),
-      })
-    )
-    .then(() => {
-      navigate('/paypal/paymentDone')
-    });
-  };
+  // useEffect(() => {
+  //   var payload = {
+  //     idOrder: orderCreate.id,
+  //     intent: orderPaypal.intent,
+  //     status: orderCreate.status,
+  //     // createTime: '',
+
+  //     referenceId: '',
+  //     nameShippingCus: '',
+  //     addLine1Cus: '',
+  //     addLine2Cus: '',
+  //     adArea1: '',
+  //     adArea2: '',
+  //     posCode: '',
+  //     couCode: '',
+
+  //     payAuthStatus: '',
+  //     payAuthId: '',
+  //     payAuthamount: '',
+  //     payAuthExpTime: '',
+  //     payAuthCreTime: '',
+  //     payAuthUpdTime: '',
+
+  //     givenNamePayer: '',
+  //     surnamePayer: '',
+  //     emailSurname: '',
+  //     idPayer: '',
+  //     couCodePayer: '',
+
+  //   }
+  //   dispatch(doCreateOrder())
+  // }, [])
+
+  const handleAuthorize = (idOrder) => {
+    
+  }
 
   return (
     <>
       <h3>Review Payment</h3>
-      {transaction && shippingAddress && payerInfo && (
-        <ContentPaymnet
-          transaction={transaction}
-          shippingAddress={shippingAddress}
-          payerInfo={payerInfo}
-        />
+      {orderApproved.status && (
+        <>
+          <h5>Order Approved</h5>
+          <p>Id order: {orderApproved.id}</p>
+          <p>Created time: {orderApproved.create_time}</p>
+          <p>Intent: {orderApproved.intent}</p>
+
+          <h5>Payer</h5>
+          <p>Id Payer: {orderApproved.payer.payer_id}</p>
+          <p>Given name: {orderApproved.payer.name.given_name}</p>
+          <p>Surname: {orderApproved.payer.name.surname}</p>
+          <p>Country code: {orderApproved.payer.address.country_code}</p>
+
+          <h5>Shipping</h5>
+          <p>Full Name: {orderApproved.purchase_units[0].shipping.name.full_name}</p>
+          <p>Address Line 1: {orderApproved.purchase_units[0].shipping.address.address_line_1}</p>
+          <p>Address Line 2: {orderApproved.purchase_units[0].shipping.address.address_line_2 || ''}</p>
+          <p>Admin area 1: {orderApproved.purchase_units[0].shipping.address.admin_area_1}</p>
+          <p>Admin area 2: {orderApproved.purchase_units[0].shipping.address.admin_area_2}</p>
+          <p>Address Country Code: {orderApproved.purchase_units[0].shipping.address.admin_area_2}</p>
+
+          <h5>Payee</h5>
+          <p>Email: {orderApproved.purchase_units[0].payee.email_address}</p>
+          <p>Merchant Id: {orderApproved.purchase_units[0].payee.merchant_id}</p>
+
+          <h5>Items</h5>
+          <table className="table-1">
+            <thead>
+              <tr>
+                <th className="th-1">Name</th>
+                <th className="th-1">Description</th>
+                <th className="th-1">Quantity</th>
+                <th className="th-1">Price</th>
+                <th className="th-1">Currency Code</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orderApproved.purchase_units[0].items.map((item, index) => (
+                <tr key={index}>
+                  <td className="td-1">{item.name}</td>
+                  <td className="td-1">{item.description}</td>
+                  <td className="td-1">{item.quantity}</td>
+                  <td className="td-1">{item.unit_amount.value}</td>
+                  <td className="td-1">{item.unit_amount.currency_code}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <h5>Purchase Units</h5>
+          <p>Status: {orderApproved.purchase_units.status}</p>
+          <p>Item Total: ${orderApproved.purchase_units[0].amount.breakdown.item_total.value}</p>
+          <p>Currency code: {orderApproved.purchase_units[0].amount.breakdown.item_total.currency_code}</p>
+          <p>Description: {orderApproved.purchase_units[0].description}</p>     
+
+          <button onClick={() => handleAuthorize(orderApproved.id)}>Authorize payment for order</button>    
+        </>
       )}
-      <button onClick={handleExecutePayment}>payment</button>
     </>
   );
 }
 
-function ContentPaymnet(props) {
-  const { transaction, shippingAddress, payerInfo } = props;
-
-  return (
-    <table>
-      <tbody>
-        <tr>
-          <th colSpan="2">Transaction Details</th>
-        </tr>
-        <tr>
-          <td>Description: </td>
-          <td>{transaction.description}</td>
-        </tr>
-        <tr>
-          <td>Sub total: </td>
-          <td>${transaction.amount.details.subtotal}</td>
-        </tr>
-        <tr>
-          <td>Shipping: </td>
-          <td>${transaction.amount.details.shipping}</td>
-        </tr>
-        <tr>
-          <td>Tax: </td>
-          <td>${transaction.amount.details.tax}</td>
-        </tr>
-        <tr>
-          <td>Total: </td>
-          <td>${transaction.amount.total}</td>
-        </tr>
-
-        <tr>
-          <th colSpan="2">Payer Information</th>
-        </tr>
-        <tr>
-          <td>First name: </td>
-          <td>{payerInfo.firstName}</td>
-        </tr>
-        <tr>
-          <td>Last name: </td>
-          <td>{payerInfo.lastName}</td>
-        </tr>
-        <tr>
-          <td>Email: </td>
-          <td>{payerInfo.email}</td>
-        </tr>
-
-        <tr>
-          <th colSpan="2">Shipping Address</th>
-        </tr>
-        <tr>
-          <td>Recipient Name: </td>
-          <td>{shippingAddress.recipientName}</td>
-        </tr>
-        <tr>
-          <td>Line 1: </td>
-          <td>{shippingAddress.line1}</td>
-        </tr>
-        <tr>
-          <td>City: </td>
-          <td>{shippingAddress.city}</td>
-        </tr>
-        <tr>
-          <td>State: </td>
-          <td>{shippingAddress.state}</td>
-        </tr>
-        <tr>
-          <td>Country Code: </td>
-          <td>{shippingAddress.countryCode}</td>
-        </tr>
-        <tr>
-          <td>Postal Code: </td>
-          <td>{shippingAddress.postalCode}</td>
-        </tr>
-      </tbody>
-    </table>
-  );
-}
 
 export default ReviewPayment;

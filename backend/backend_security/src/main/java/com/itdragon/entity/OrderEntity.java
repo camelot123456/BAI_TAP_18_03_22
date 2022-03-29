@@ -37,7 +37,7 @@ public class OrderEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private String id;
+	private Long id;
 	
 	@Column(name = "[order_id]", columnDefinition = "varchar(255)")
 	private String idOrder;
@@ -47,43 +47,75 @@ public class OrderEntity {
 	private EOrderIntent intent;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(name = "[state]")
-	private EOrderState state;
+	@Column(name = "[status]")
+	private EOrderState status;
 	
 	@Column(name = "[create_time]", columnDefinition = "datetime")
 	private Date createTime;
 	
 //	------------------------------- purchase_units -----------------------------------
 	
-	private String idCus;
+	@Column(name = "[reference_id]", columnDefinition = "varchar(256)")
+	private String referenceId;
 	
-	private String nameCus;
+	@Column(name = "[shipping_full_name]", columnDefinition = "nvarchar(300)")
+	private String nameShippingCus;
 	
+	@Column(name = "[address_line_1]", columnDefinition = "nvarchar(300)")
 	private String addLine1Cus;
 	
+	@Column(name = "[address_line_2]", columnDefinition = "nvarchar(300)")
 	private String addLine2Cus;
 	
+	@Column(name = "[admin_area_1]", columnDefinition = "nvarchar(300)")
 	private String adArea1;
 	
+	@Column(name = "[admin_area_2]", columnDefinition = "nvarchar(120)")
 	private String adArea2;
 	
+	@Column(name = "[postal_code]", columnDefinition = "varchar(60)")
 	private String posCode;
 	
+	@Column(name = "[country_code]", columnDefinition = "char(2)")
 	private String couCode;
 	
 //	------------------------------- payment authorizations -----------------------------------
+	
+	@Column(name = "[pay_auth_status]", columnDefinition = "varchar(30)")
 	private String payAuthStatus;
 	
+	@Column(name = "[pay_auth_id]", columnDefinition = "varchar(256)")
 	private String payAuthId;
 	
-	private String payAuthAmount;
+	@Column(name = "[pay_auth_amount]", columnDefinition = "float")
+	private Double payAuthAmount;
 	
+	@Column(name = "[pay_auth_exp_time]", columnDefinition = "datetime")
 	private Date payAuthExpTime;
 	
+	@Column(name = "[pay_auth_cre_time]", columnDefinition = "datetime")
 	private Date payAuthCreTime;
 	
+	@Column(name = "[pay_auth_upd_time]", columnDefinition = "datetime")
 	private Date payAuthUpdTime;
 		
+//	------------------------------- payer -----------------------------------	
+	
+	@Column(name = "given_name_payer", columnDefinition = "nvarchar(140)")
+	private String givenNamePayer;
+	
+	@Column(name = "surname_payer", columnDefinition = "nvarchar(140)")
+	private String surnamePayer;
+	
+	@Column(name = "email_payer", columnDefinition = "varchar(254)")
+	private String emailSurname;
+	
+	@Column(name = "id_payer", columnDefinition = "varchar(13)")
+	private String idPayer;
+	
+	@Column(name = "[country_code_payer]", columnDefinition = "char(2)")
+	private String couCodePayer;
+	
 //	------------------------------- relationship -----------------------------------	
 	
 	
@@ -92,7 +124,7 @@ public class OrderEntity {
 	@JsonBackReference("user-order")
 	private UserEntity user;
 	
-	@OneToMany(mappedBy = "order")
+	@OneToMany(mappedBy = "order") 
 	@JsonManagedReference("order-items")
 	private List<ItemsEntity> items;
 	

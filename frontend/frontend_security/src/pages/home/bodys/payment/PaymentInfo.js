@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import parseJwt from "../../../../commons/jwt-common";
 import { showProductCart } from "../../../../redux/actions/cart-action";
-import { doCreateOrder } from "../../../../redux/actions/paypal-action";
+import { doCreateOrderPaypal } from "../../../../redux/actions/paypal-action";
+import {doCreateOrder } from "../../../../redux/actions/order-action"
 
 function PaymentInfo() {
   const authProvider = useSelector((state) => state.authReducer.authProvider);
@@ -13,9 +14,6 @@ function PaymentInfo() {
   const navigate = useNavigate();
 
   const productCart = useSelector((state) => state.cartReducer.productCart);
-  const responseCreateOrder = useSelector((state) => state.paypalReducer.responseCreateOrder)
-
-    console.log(responseCreateOrder)
 
   useEffect(() => {
     dispatch(showProductCart(accessToken.sub));
@@ -65,7 +63,10 @@ function PaymentInfo() {
       },
     };
 
-    dispatch(doCreateOrder(data));
+    dispatch(doCreateOrderPaypal(data))
+    .then(() => {
+      localStorage.setItem("orderPaypal", JSON.stringify(data))
+    })
   };
 
   return (
@@ -137,60 +138,7 @@ function PaymentInfo() {
             ))}
         </tbody>
       </table>
-      <table>
-        <tbody>
-        <tr>
-            <th>Shipping</th>
-          </tr>
-          <tr>
-            <td>Address line 1: </td>
-            <td>
-              <input />
-            </td>
-          </tr>
-          <tr>
-            <td>Address line 2: </td>
-            <td>
-              <input />
-            </td>
-          </tr>
-          <tr>
-            <td>Addmin area 1: </td>
-            <td>
-              <input />
-            </td>
-          </tr>
-          <tr>
-            <td>Addmin area 2: </td>
-            <td>
-              <input />
-            </td>
-          </tr>
-          <tr>
-            <td>Postal Code: </td>
-            <td>
-              <input />
-            </td>
-          </tr>
-          <tr>
-            <td>Country Code: </td>
-            <td>
-              <input />
-            </td>
-          </tr>
-          <tr>
-            <td>Description: </td>
-            <td>
-              <input />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button onClick={handlePayment}>Payment</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <button onClick={handlePayment}>Payment</button>
     </>
   );
 }

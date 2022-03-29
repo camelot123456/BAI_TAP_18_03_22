@@ -34,4 +34,30 @@ const createOrder = (payload) => {
     })
 }
 
-export default {oauth2Paypal, createOrder}
+const showOrder = (idOrder) => {
+    const token = localStorage.getItem(ACCESS_TOKEN_PAYPAL)
+    return axios.request({
+        url: `/v2/checkout/orders/${idOrder}`,
+        method: 'GET',
+        baseURL: URL_PAYPAL,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    })
+}
+
+const showAuthorizePayment = (idOrder) => {
+    const token = localStorage.getItem(ACCESS_TOKEN_PAYPAL)
+    return axios.request({
+        url: `/v2/checkout/orders/${idOrder}/authorize`,
+        method: 'POST',
+        baseURL: URL_PAYPAL,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    })
+}
+
+export default {oauth2Paypal, createOrder, showOrder, showAuthorizePayment}

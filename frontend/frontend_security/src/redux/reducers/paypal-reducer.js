@@ -4,8 +4,8 @@ const initialState = {
     accessToken: null,
     tokenType: null,
     responseOrder: {},
-    responseCreateOrder: {}
-
+    responseCreateOrder: {},
+    orderApproved: {}
 
 }
 
@@ -17,6 +17,13 @@ const paypalReducer = (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 responseCreateOrder
+            }
+        case paypalType.SHOW_ORDER:
+            var orderApproved = { ...state.orderApproved }
+            orderApproved = payload.orderApproved
+            return {
+                ...state,
+                orderApproved
             }
     
         default:

@@ -7,6 +7,7 @@ import paymentReducer from '../reducers/payment-reducer'
 import paypalReducer from '../reducers/paypal-reducer'
 import productReducer from '../reducers/product-reducer'
 import cartReducer from '../reducers/cart-reducer'
+import orderReducer from '../reducers/order-reducer'
 
 const rootReducer = combineReducers({
     authReducer,
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
     paymentReducer,
     paypalReducer,
     productReducer,
-    cartReducer
+    cartReducer,
+    orderReducer
 })
 
 export default rootReducer

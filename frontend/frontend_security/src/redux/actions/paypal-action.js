@@ -15,11 +15,12 @@ export const doOauth2Paypal = (auth) => (dispatch) => {
     })
 }
 
-export const doCreateOrder = (payload) => (dispatch) => {
+export const doCreateOrderPaypal = (payload) => (dispatch) => {
     return new Promise((resolve, reject) => {
         paypalService.createOrder(payload)
         .then((res) => {
             if (res.status === 201) {
+                localStorage.setItem('orderCreate', JSON.stringify(res.data))
                 dispatch({
                     type: paypalType.DO_CREATE_ORDER,
                     payload: {
@@ -32,6 +33,25 @@ export const doCreateOrder = (payload) => (dispatch) => {
                     }
                 })
             }
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+export const showOrder = (idOrder) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        paypalService.showOrder(idOrder)
+        .then((res) => {
+            localStorage.setItem('orderApproved', JSON.stringify(res.data))
+            dispatch({
+                type: paypalType.SHOW_ORDER,
+                payload: {
+                    orderApproved: res.data
+                }
+            })
             resolve()
         })
         .catch((err) => {

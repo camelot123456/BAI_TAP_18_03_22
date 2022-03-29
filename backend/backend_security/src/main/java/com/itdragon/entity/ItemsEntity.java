@@ -27,7 +27,7 @@ public class ItemsEntity {
 	private Long id;
 	
 	@Column(name = "[quantity]", columnDefinition = "int")
-	private Integer quantity;
+	private Integer quantity; 
 	
 	@Column(name = "[price]", columnDefinition = "float")
 	private Double price;
@@ -41,4 +41,5 @@ public class ItemsEntity {
 	@JoinColumn(name = "id_order")
 	@JsonBackReference("order-items")
 	private OrderEntity order;
+	
 }

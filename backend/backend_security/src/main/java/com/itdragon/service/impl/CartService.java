@@ -45,7 +45,7 @@ public class CartService implements ICartService{
 				res += pc.getQuantity();
 			}
 			return res;
-		} catch (NullPointerException e) {
+		} catch (NullPointerException | IndexOutOfBoundsException e) {
 			// TODO: handle exception
 			return 0;
 		}
