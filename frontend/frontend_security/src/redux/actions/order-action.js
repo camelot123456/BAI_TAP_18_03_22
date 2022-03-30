@@ -13,6 +13,18 @@ const doCreateOrder = (payload) => (dispatch) => {
     })
 }
 
+const doUpdateOrder = (token, payerId, payload) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        orderServ.doPatchOrder(token, payerId, payload)
+        .then((response) => {
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
 const showOrderDetail = (token, payerId) => (dispatch) => {
     return new Promise((resolve, reject) => {
         orderServ.showOrderDetail(token, payerId)
@@ -32,4 +44,91 @@ const showOrderDetail = (token, payerId) => (dispatch) => {
     })
 }
 
-export default {doCreateOrder, showOrderDetail}
+const showUnpaidOrderList = (username) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        orderServ.showUnpaidOrderList(username)
+        .then((res) => {
+            dispatch({
+                type: orderType.SHOW_UNPAID_ORDER_LIST,
+                payload: {
+                    orders: res.data
+                }
+            })
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+const showPaidOrderUnReceivedList = (username) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        orderServ.showPaidOrderUnReceivedList(username)
+        .then((res) => {
+            dispatch({
+                type: orderType.SHOW_PAID_ORDER_UN_RECEIVED_LIST,
+                payload: {
+                    ordersUnReceive: res.data
+                }
+            })
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+const showPaidOrderList = (username) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        orderServ.showPaidOrderList(username)
+        .then((res) => {
+            dispatch({
+                type: orderType.SHOW_PAID_ORDER_LIST,
+                payload: {
+                    ordersPaid: res.data
+                }
+            })
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+const doDeleteOrder = (token, payerId) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        orderServ.doDeleteOrder(token, payerId)
+        .then((res) => {
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+const doUpdateOrderStatusReceive = (token, payerId) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        orderServ.doUpdateOrderStatusReceive(token, payerId)
+        .then((res) => {
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+export default {
+    doCreateOrder, 
+    showOrderDetail, 
+    doUpdateOrder, 
+    showPaidOrderUnReceivedList, 
+    showUnpaidOrderList, 
+    doDeleteOrder, 
+    showPaidOrderList,
+    doUpdateOrderStatusReceive
+}

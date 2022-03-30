@@ -2,7 +2,10 @@ import orderType from "../types/order-type";
 
 const initialState = {
     order: {},
-    items: []
+    orders: [],
+    items: [],
+    ordersPaid: [],
+    ordersUnReceive: []
 }
 
 const orderReducer = (state = initialState, { type, payload }) => {
@@ -16,6 +19,27 @@ const orderReducer = (state = initialState, { type, payload }) => {
                 ...state,
                 order,
                 items
+            }
+        case orderType.SHOW_UNPAID_ORDER_LIST:
+            var orders = {...state.orders}
+            orders = payload.orders
+            return {
+                ...state,
+                orders
+            }
+        case orderType.SHOW_PAID_ORDER_LIST:
+            var ordersPaid = {...state.ordersPaid}
+            ordersPaid = payload.ordersPaid
+            return {
+                ...state,
+                ordersPaid
+            }
+        case orderType.SHOW_PAID_ORDER_UN_RECEIVED_LIST:
+            var ordersUnReceive = {...state.ordersUnReceive}
+            ordersUnReceive = payload.ordersUnReceive
+            return {
+                ...state,
+                ordersUnReceive
             }
         default:
             return state;

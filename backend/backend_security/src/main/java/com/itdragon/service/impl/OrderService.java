@@ -1,5 +1,7 @@
 package com.itdragon.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.itdragon.entity.ItemsEntity;
 import com.itdragon.entity.OrderEntity;
 import com.itdragon.entity.ProductEntity;
+import com.itdragon.entity.enums.EOrderState;
 import com.itdragon.repository.IItemRepository;
 import com.itdragon.repository.IOrderRepository;
 import com.itdragon.repository.IProductRepository;
@@ -40,6 +43,7 @@ public class OrderService implements IOrderServie{
 		orderNew.setCouCode(order.getCouCode());
 		orderNew.setCouCodePayer(order.getCouCodePayer());
 		orderNew.setCreateTime(order.getCreateTime());
+		orderNew.setCurrencyCode(order.getCurrencyCode());
 		orderNew.setEmailPayer(order.getEmailPayer());
 		orderNew.setGivenNamePayer(order.getGivenNamePayer());
 		orderNew.setIdOrder(order.getIdOrder());
@@ -51,6 +55,8 @@ public class OrderService implements IOrderServie{
 		orderNew.setStatus(order.getStatus());
 		orderNew.setSurnamePayer(order.getSurnamePayer());
 		orderNew.setTotal(order.getTotal());
+		orderNew.setFinalCapture(false);
+		orderNew.setReceived(false);
 		orderNew.setUser(userRepo.findByUsername(order.getUser().getUsername()));
 		
 		OrderEntity orderFinish = orderRepo.save(orderNew);
@@ -72,6 +78,68 @@ public class OrderService implements IOrderServie{
 	public OrderEntity findByIdOrderAndIdPayer(String idOrder, String idPayer) {
 		// TODO Auto-generated method stub
 		return orderRepo.findByIdOrderAndIdPayer(idOrder, idPayer);
+	}
+
+	@Override
+	public OrderEntity updateOrderByIdOrderAndIdPayer(String idOrder, String idPayer, OrderEntity orderPayload) {
+		// TODO Auto-generated method stub
+		OrderEntity order = orderRepo.findByIdOrderAndIdPayer(idOrder, idPayer);
+		order.setNameShippingCus(orderPayload.getNameShippingCus());
+		order.setAddLine1Cus(orderPayload.getAddLine1Cus());
+		order.setAddLine2Cus(orderPayload.getAddLine2Cus());
+		order.setAdArea1(orderPayload.getAdArea1());
+		order.setAdArea2(orderPayload.getAdArea2());
+		order.setPosCode(orderPayload.getPosCode());
+		order.setCouCodePayer(orderPayload.getCouCodePayer());
+		return orderRepo.save(order);
+	}
+
+	@Override
+	public List<OrderEntity> findAllByUsernameAndFinalCapture(String username, Boolean finalCapture) {
+		// TODO Auto-generated method stub
+		return orderRepo.findAllByUsernameAndFinalCapture(username, finalCapture);
+	}
+
+	@Transactional
+	@Override
+	public void deleteOrderByIdOrderAndIdPayer(String idOrder, String idPayer) {
+		// TODO Auto-generated method stub
+		OrderEntity order = orderRepo.findByIdOrderAndIdPayer(idOrder, idPayer);
+		order.getItems().stream().forEach(i -> itemRepo.deleteById(i.getId()));
+		orderRepo.deleteById(order.getId());
+	}
+
+	@Transactional
+	@Override
+	public OrderEntity updateOrderAfterCaptureByIdOrderAndIdPayer(String idOrder, String idPayer,
+			OrderEntity orderPayload) {
+		// TODO Auto-generated method stub
+		OrderEntity order = orderRepo.findByIdOrderAndIdPayer(idOrder, idPayer);
+		order.setStatus(orderPayload.getStatus());
+		order.setFinalCapture(orderPayload.getFinalCapture());
+		order.setPayAuthStatus(orderPayload.getPayAuthStatus());
+		order.setPayAuthId(orderPayload.getPayAuthId());
+		order.setPayAuthAmount(orderPayload.getPayAuthAmount());
+		order.setPayAuthGrossAmount(orderPayload.getPayAuthGrossAmount());
+		order.setPayAuthPaypalFee(orderPayload.getPayAuthPaypalFee());
+		order.setPayAuthNetAmount(orderPayload.getPayAuthNetAmount());
+		order.setPayAuthCreTime(orderPayload.getPayAuthCreTime());
+		order.setPayAuthUpdTime(orderPayload.getPayAuthUpdTime());
+		return orderRepo.save(order); 
+	}
+
+	@Override
+	public OrderEntity updateStatusReceivedOrderByIdOrderAndIdPayer(String idOrder, String idPayer) {
+		// TODO Auto-generated method stub
+		OrderEntity order = orderRepo.findByIdOrderAndIdPayer(idOrder, idPayer);
+		order.setStatus(EOrderState.RECEIVED);
+		return orderRepo.save(order);
+	}
+
+	@Override
+	public List<OrderEntity> findAllOrderPaidByUsernameAndStatusNotReceived(String username) {
+		// TODO Auto-generated method stub
+		return orderRepo.findAllOrderPaidByUsernameAndStatusNotReceived(username);
 	}
 
 }

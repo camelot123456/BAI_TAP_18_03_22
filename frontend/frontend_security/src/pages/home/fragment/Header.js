@@ -5,7 +5,7 @@ import { ACCESS_TOKEN, ACCESS_TOKEN_PAYPAL } from "../../../constants/system-con
 import '../../../App.css'
 import { useDispatch, useSelector } from "react-redux";
 import { removeAuth } from "../../../redux/actions/auth-action";
-import { doCountProductOfCart } from "../../../redux/actions/cart-action";
+import cartActions from "../../../redux/actions/cart-action";
 
 function Header () {
 
@@ -18,7 +18,7 @@ function Header () {
 
     useEffect(() => {
         if (accessToken) {
-            dispatch(doCountProductOfCart(accessToken.sub))
+            dispatch(cartActions.doCountProductOfCart(accessToken.sub))
         }
     }, [])
 
@@ -39,8 +39,8 @@ function Header () {
 
             {accessToken ? (
                 <div>
-                    <Link to="/cart"><span>cart({cartTotal || 0})</span></Link>
-                    {'    '}
+                    <Link to="/historyOrder">History</Link>{'    '}
+                    <Link to="/cartAndOrder"><span>cart({cartTotal || 0})</span></Link>{'    '}
                     <span>Hello, {accessToken.sub}     </span>
                     <a href="#" onClick={(e)=>doLogout(e)}>Logout</a>
                 </div>

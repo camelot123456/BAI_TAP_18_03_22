@@ -47,10 +47,10 @@ const showOrder = (idOrder) => {
     })
 }
 
-const doUpdateOrder = (payload) => {
+const doUpdateOrder = (idOrder, payload) => {
     const token = localStorage.getItem(ACCESS_TOKEN_PAYPAL)
     return axios.request({
-        url: `/v2/checkout/orders`,
+        url: `/v2/checkout/orders/${idOrder}`,
         method: 'PATCH',
         baseURL: URL_PAYPAL,
         data: payload,

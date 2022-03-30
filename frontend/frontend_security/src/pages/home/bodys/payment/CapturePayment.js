@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import * as Yup from 'yup';
-import {Formik, Form} from 'formik'
+import * as Yup from 'yup'
+import { Form, Formik } from "formik";
 
 
 import paypalAction from "../../../../redux/actions/paypal-action";
-import orderAction from "../../../../redux/actions/order-action"
+import orderActions from "../../../../redux/actions/order-action"
 import parseJwt from "../../../../commons/jwt-common";
-import { doCountProductOfCart, doPaymentOrder, showProductCart } from "../../../../redux/actions/cart-action";
+import cartActions from "../../../../redux/actions/cart-action";
 
 function CapturePayment() {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    const items = useSelector((state) => state.orderReducer.items)
+    const [searchParams, setSearchParams] = useSearchParams()
+    const authProvider = useSelector(state => state.authReducer.authProvider)
+    const accessToken = parseJwt(authProvider.accessToken)
 
     const initialValues = {
       givenName: '',
@@ -25,18 +30,16 @@ function CapturePayment() {
       addressLine2: '',
       adminArea1: '',
       adminArea2: '',
+      postalCode: '',
       addressCountryCode: ''
     }
 
     const validationSchema = Yup.object().shape({
-      givenName: Yup.string().max(140).required(),
-      surname: Yup.string().max(140).required(),
-      countryCode: Yup.string().min(2).max(2).required(),
-
       fullName: Yup.string().max(300).required(),
       addressLine1: Yup.string().max(300).required(),
       adminArea1: Yup.string().max(300).required(),
-      addressCountryCode: Yup.string().min(2).max(2).required()
+      addressCountryCode: Yup.string().min(2).max(2).required(),
+      postalCode: Yup.string().matches(/^[0-9]+$/, "Must be only digits").max(60).required(),
     })
     
     const order = useSelector((state) => {
@@ -44,115 +47,98 @@ function CapturePayment() {
       initialValues.surname = state.orderReducer.order.surnamePayer || ''
       initialValues.countryCode = state.orderReducer.order.countryCode || ''
 
-      initialValues.fullName = `${initialValues.givenName} ${initialValues.surname}` || ''
+      initialValues.fullName = `${state.orderReducer.order.nameShippingCus}` || ''
       initialValues.addressLine1 = state.orderReducer.order.addLine1Cus || ''
       initialValues.addressLine2 = state.orderReducer.order.addLine2Cus || ''
       initialValues.adminArea1 = state.orderReducer.order.adArea1 || ''
       initialValues.adminArea2 = state.orderReducer.order.adArea2 || ''
       initialValues.addressCountryCode = state.orderReducer.order.couCode || ''
+      initialValues.postalCode = state.orderReducer.order.posCode || ''
       return state.orderReducer.order
     })
 
-    const items = useSelector((state) => state.orderReducer.items)
-    const authProvider = useSelector((state) => state.authReducer.authProvider);
-    const accessToken = parseJwt(authProvider.accessToken);
-    const [searchParams, setSearchParams] = useSearchParams()
 
     useEffect( () => {
-        dispatch(orderAction.showOrderDetail(
+        dispatch(orderActions.showOrderDetail(
             searchParams.get('token'), 
             searchParams.get('PayerID')
         ))
     }, [])
 
-    
-
     return (
-      <Formik initialValues={initialValues} validationSchema={validationSchema} 
-        onSubmit={(values) => {
-          // TODO:
-          dispatch(paypalAction.doCaptureOrder(order.idOrder))
-          .then(() => {
-              dispatch(doPaymentOrder(accessToken.sub))
-              dispatch(doCountProductOfCart(accessToken.sub))
-              dispatch(showProductCart(accessToken.sub))
-          })
-          .finally(() => {
-              navigate('/cart')
-          })
-        }}
-      >
+      <Formik initialValues={initialValues} validationSchema={validationSchema} >
         {(formikProps) => {
           const {errors, values, handleChange, handleBlur } = formikProps
-          
+
+          const handleCancel = (values) => {
+            // TODO: delete order and order items
+            navigate('/cartAndOrder')
+          }
+
+          const handleSave = (values) => {
+            dispatch(paypalAction.doUpdateOrder(order.idOrder, {
+              address_line_1: values.addressLine1,
+              address_line_2: values.addressLine2,
+              admin_area_1: values.adminArea1,
+              admin_area_2: values.adminArea2,
+              postal_code: values.postalCode,
+              country_code: values.addressCountryCode,
+              reference_id: order.referenceId,
+              full_name: values.fullName
+            }))
+            .then(() => {
+              var dataPatch = {
+                token: searchParams.get('token'),
+                payerId: searchParams.get('PayerID'),
+                payload: {
+                  addLine1Cus: values.addressLine1,
+                  addLine2Cus: values.addressLine2,
+                  adArea1: values.adminArea1,
+                  adArea2: values.adminArea2,
+                  posCode: values.postalCode,
+                  couCode: values.addressCountryCode,
+                  nameShippingCus: values.fullName
+                }
+              }
+              dispatch(orderActions.doUpdateOrder(dataPatch.token, dataPatch.payerId, dataPatch.payload))
+            })
+          }
+
+          const handlePayment = (values) => {
+            
+            dispatch(paypalAction.doCaptureOrder(order.idOrder, order.idPayer))
+            .then(() => {
+              dispatch(cartActions.doPaymentOrder(accessToken.sub))
+              navigate('/cartAndOrder')
+            })
+            .finally(() => {
+              dispatch(cartActions.doCountProductOfCart(accessToken.sub))
+              dispatch(cartActions.showProductCart(accessToken.sub))
+            })
+          }
+
+          const handleReceived = (values) => {
+            dispatch(orderActions.doUpdateOrderStatusReceive(order.idOrder, order.idPayer))
+            .then(() => {
+              navigate('/cartAndOrder')
+            })
+          }
+
+
           return (
-            <>
+            <Form>
               <h3>Review Payment</h3>
-              {order.id && (
-                <>
                   <h5>Order Approved</h5>
                   <p>Id order: {order.idOrder}</p>
                   <p>Created time: {order.createTime}</p>
                   <p>Intent: {order.intent}</p>
+                  <p className="message-error">Final Capture: {order.finalCapture ? 'PAID' : 'UNPAID'}</p>
 
                   <h5>Payer</h5>
                   <p>Id Payer: {order.idPayer}</p>
-
-                  <div style={{marginTop: "12px"}}>
-                    <label htmlFor="givenName">Given name:</label>
-                    <input type="text" id="givenName" value={values.givenName} onChange={handleChange} onBlur={handleBlur}/>
-                    <p className="message-error">{errors.givenName}</p>
-                  </div>
-
-                  <div style={{marginTop: "12px"}}>
-                    <label htmlFor="surname">Surname:</label>
-                    <input type="text" id="surname" value={values.surname} onChange={handleChange} onBlur={handleBlur}/>
-                    <p className="message-error">{errors.surname}</p>
-                  </div>
-
-                  <div style={{marginTop: "12px"}}>
-                    <label htmlFor="countryCode">Country Code:</label>
-                    <input type="text" id="countryCode" value={values.countryCode} onChange={handleChange} onBlur={handleBlur}/>
-                    <p className="message-error">{errors.countryCode}</p>
-                  </div>
-
-                  <h5>Shipping</h5>
-                  
-                  <div style={{marginTop: "12px"}}>
-                    <label htmlFor="fullName">Full Name:</label>
-                    <input type="text" id="fullName" value={values.fullName} onChange={handleChange} onBlur={handleBlur}/>
-                    <p className="message-error">{errors.fullName}</p>
-                  </div>
-
-                  <div style={{marginTop: "12px"}}>
-                    <label htmlFor="addressLine1">Address Line 1:</label>
-                    <input type="text" id="addressLine1" value={values.addressLine1} onChange={handleChange} onBlur={handleBlur}/>
-                    <p className="message-error">{errors.addressLine1}</p>
-                  </div>
-
-                  <div style={{marginTop: "12px"}}>
-                    <label htmlFor="addressLine2">Address Line 2:</label>
-                    <input type="text" id="addressLine2" value={values.addressLine2} onChange={handleChange} onBlur={handleBlur}/>
-                    <p className="message-error">{errors.addressLine2}</p>
-                  </div>
-
-                  <div style={{marginTop: "12px"}}>
-                    <label htmlFor="adminArea1">Admin Area 1:</label>
-                    <input type="text" id="adminArea1" value={values.adminArea1} onChange={handleChange} onBlur={handleBlur}/>
-                    <p className="message-error">{errors.adminArea1}</p>
-                  </div>
-
-                  <div style={{marginTop: "12px"}}>
-                    <label htmlFor="adminArea2">Admin Area 2:</label>
-                    <input type="text" id="adminArea2" value={values.adminArea2} onChange={handleChange} onBlur={handleBlur}/>
-                    <p className="message-error">{errors.adminArea2}</p>
-                  </div>
-
-                  <div style={{marginTop: "12px"}}>
-                    <label htmlFor="addressCountryCode">Country Code:</label>
-                    <input type="text" id="addressCountryCode" value={values.addressCountryCode} onChange={handleChange} onBlur={handleBlur}/>
-                    <p className="message-error">{errors.addressCountryCode}</p>
-                  </div>
+                  <p>Given name: {order.givenNamePayer}</p>
+                  <p>Surname: {order.surnamePayer}</p>
+                  <p>Country Code: {order.couCodePayer}</p>
 
                   <h5>Payee</h5>
                   <p>Email: {order.emailPayer}</p>
@@ -182,14 +168,89 @@ function CapturePayment() {
                   </table>
 
                   <h5>Purchase Units</h5>
-                  <p>Status: {order.status}</p>
-                  <p>Item Total: ${order.total}</p>
+                  <p className="message-error">Status: {order.status}</p>
+                  <p className="message-error">Item Total: ${order.total}</p>
                   <p>Currency code: {order.currencyCode}</p>
 
-                  <button type="submit">Payment</button>    
-                </>
-              )}  
-            </>
+                  <h5>Shipping</h5>
+                  
+                  {order.finalCapture ? (
+                    <>
+                      <p>Full Name: {order.nameShippingCus}</p>
+                      <p>Address Line 1: {order.addLine1Cus}</p>
+                      <p>Address Line 2: {order.addLine2Cus}</p>
+                      <p>Admin Area 1: {order.adArea2}</p>
+                      <p>Admin Area 2: {order.adArea2}</p>
+                      <p>Postal Code: {order.posCode}</p>
+                      <p>Country Code: {order.couCode}</p>
+                    </>
+                  ) : (
+                    <>
+                      <div style={{marginTop: "12px"}}>
+                        <label htmlFor="fullName">Full Name:</label>
+                        <input type="text" id="fullName" value={values.fullName} onChange={handleChange} onBlur={handleBlur}/>
+                        <p className="message-error">{errors.fullName}</p>
+                      </div>
+
+                      <div style={{marginTop: "12px"}}>
+                        <label htmlFor="addressLine1">Address Line 1:</label>
+                        <input type="text" id="addressLine1" value={values.addressLine1} onChange={handleChange} onBlur={handleBlur}/>
+                        <p className="message-error">{errors.addressLine1}</p>
+                      </div>
+
+                      <div style={{marginTop: "12px"}}>
+                        <label htmlFor="addressLine2">Address Line 2:</label>
+                        <input type="text" id="addressLine2" value={values.addressLine2} onChange={handleChange} onBlur={handleBlur}/>
+                        <p className="message-error">{errors.addressLine2}</p>
+                      </div>
+
+                      <div style={{marginTop: "12px"}}>
+                        <label htmlFor="adminArea1">Admin Area 1:</label>
+                        <input type="text" id="adminArea1" value={values.adminArea1} onChange={handleChange} onBlur={handleBlur}/>
+                        <p className="message-error">{errors.adminArea1}</p>
+                      </div>
+
+                      <div style={{marginTop: "12px"}}>
+                        <label htmlFor="adminArea2">Admin Area 2:</label>
+                        <input type="text" id="adminArea2" value={values.adminArea2} onChange={handleChange} onBlur={handleBlur}/>
+                        <p className="message-error">{errors.adminArea2}</p>
+                      </div>
+
+                      <div style={{marginTop: "12px"}}>
+                        <label htmlFor="postalCode">Postal Code:</label>
+                        <input type="text" id="postalCode" value={values.postalCode} onChange={handleChange} onBlur={handleBlur}/>
+                        <p className="message-error">{errors.postalCode}</p>
+                      </div>
+
+                      <div style={{marginTop: "12px"}}>
+                        <label htmlFor="addressCountryCode">Country Code:</label>
+                        <input type="text" id="addressCountryCode" value={values.addressCountryCode} onChange={handleChange} onBlur={handleBlur}/>
+                        <p className="message-error">{errors.addressCountryCode}</p>
+                      </div>
+                    </>
+                  )}
+                  
+                  <br />
+
+                  {order.finalCapture ? (
+                    <>
+                      <button type="button" onClick={() => handleCancel(values)}>Cancel</button>{'   '}
+                      {order.status !== 'RECEIVED' && (
+                        <>
+                          <button type="button" onClick={() => handleSave(values)}>Refund</button> {'   '}
+                          <button type="button" onClick={() => handleReceived(values)}>Received</button> 
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <button type="button" onClick={() => handleCancel(values)}>Cancel</button>{'   '}
+                      <button type="button" onClick={() => handleSave(values)}>Save</button> {'   '}
+                      <button type="button" onClick={() => handlePayment(values)}>Payment</button> 
+                    </>
+                  )}
+
+            </Form>
           )
         }}
       </Formik>

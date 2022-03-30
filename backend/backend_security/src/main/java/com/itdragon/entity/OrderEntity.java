@@ -59,6 +59,12 @@ public class OrderEntity {
 	@Column(name = "[currency_code]", columnDefinition = "char(3)")
 	private String currencyCode;
 	
+	@Column(name = "[final_capture]", columnDefinition = "bit default 0")
+	private Boolean finalCapture;
+	
+	@Column(name = "[received]", columnDefinition = "bit default 0")
+	private Boolean received;
+	
 //	------------------------------- purchase_units -----------------------------------
 	
 	@Column(name = "[reference_id]", columnDefinition = "varchar(256)")
@@ -96,14 +102,20 @@ public class OrderEntity {
 	@Column(name = "[pay_auth_amount]", columnDefinition = "float")
 	private Double payAuthAmount;
 	
-	@Column(name = "[pay_auth_exp_time]", columnDefinition = "datetime")
-	private Date payAuthExpTime;
-	
 	@Column(name = "[pay_auth_cre_time]", columnDefinition = "datetime")
 	private Date payAuthCreTime;
 	
 	@Column(name = "[pay_auth_upd_time]", columnDefinition = "datetime")
 	private Date payAuthUpdTime;
+	
+	@Column(name = "[gross_amount]", columnDefinition = "float")
+	private Double payAuthGrossAmount;
+	
+	@Column(name = "[paypal_fee]", columnDefinition = "float")
+	private Double payAuthPaypalFee;
+	
+	@Column(name = "[net_amount]", columnDefinition = "float")
+	private Double payAuthNetAmount;
 		
 //	------------------------------- payer -----------------------------------	
 	

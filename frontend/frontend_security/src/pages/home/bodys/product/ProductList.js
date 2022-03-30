@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import parseJwt from '../../../../commons/jwt-common';
-import { doAddProductIntoCart, doCountProductOfCart } from '../../../../redux/actions/cart-action';
+import cartActions from '../../../../redux/actions/cart-action';
 import { showProductList } from '../../../../redux/actions/product-action';
 
 function ProductList () {
@@ -25,9 +25,9 @@ function ProductList () {
                 username: accessToken.sub,
                 quantity: 1
             }
-            dispatch(doAddProductIntoCart(payload))
+            dispatch(cartActions.doAddProductIntoCart(payload))
             .then(() => {
-                dispatch(doCountProductOfCart(accessToken.sub))
+                dispatch(cartActions.doCountProductOfCart(accessToken.sub))
             })
         } else navigate('/auth/login')
         

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import parseJwt from "../../../../commons/jwt-common";
-import { showProductCart } from "../../../../redux/actions/cart-action";
+import cartActions from "../../../../redux/actions/cart-action";
 import paypalAction from "../../../../redux/actions/paypal-action";
 import {doCreateOrder } from "../../../../redux/actions/order-action"
 
@@ -16,7 +16,7 @@ function PaymentInfo() {
   const productCart = useSelector((state) => state.cartReducer.productCart);
 
   useEffect(() => {
-    dispatch(showProductCart(accessToken.sub));
+    dispatch(cartActions.showProductCart(accessToken.sub));
   }, []);
 
   const handlePayment = () => {
@@ -75,48 +75,26 @@ function PaymentInfo() {
     <>
       <h3>Payment</h3>
       <hr />
-      <table>
-        <tbody>
-          <tr>
-            <th colSpan="2">Payment</th>
-          </tr>
-          <tr>
-            <td>Intent: </td>
-            <td>
-              <select>
-                <option>CAPTURE</option>
-                <option>AUTHORIZE</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td>Reference Id: </td>
-            <td>{referenceId}</td>
-          </tr>
-          <tr>
-            <th colSpan="2">Amount </th>
-          </tr>
-          <tr>
-            <td>Currency code: </td>
-            <td>USD</td>
-          </tr>
-          <tr>
-            <td>Grand Total: </td>
-            <td>
-              $
-              {productCart.reduce(
-                (prev, curr) => Number(prev) + Number(curr.totalPrice),
-                0
-              )}
-            </td>
-          </tr>
-          <tr>
-            <th colSpan="2">Items </th>
-          </tr>
-        </tbody>
-      </table>
 
-      <table className="table-1" style={{ width: "100%" }}>
+      <h5>Payment</h5>
+      <span>Intent: 
+        <select>
+          <option>CAPTURE</option>
+          <option>AUTHORIZE</option>
+        </select>
+      </span>
+      <p>Reference Id: {referenceId}</p>
+
+      <h5>Amount </h5>
+      <p>Currency code: USD</p>
+      <p>Grand Total: ${productCart.reduce(
+          (prev, curr) => Number(prev) + Number(curr.totalPrice),
+          0
+        )}
+      </p>
+
+      <h5>Items </h5>
+      <table className="table-1">
         <tbody>
           <tr>
             <th className="th-1">id</th>
@@ -145,6 +123,7 @@ function PaymentInfo() {
             ))}
         </tbody>
       </table>
+      <br />
       <button onClick={handlePayment}>Payment</button>
     </>
   );

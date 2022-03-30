@@ -25,10 +25,11 @@ import PaymentCancel from "./pages/home/bodys/payment/PaymentCancel";
 import ReviewPayment from "./pages/home/bodys/payment/ReviewPayment";
 import PaymentDone from "./pages/home/bodys/payment/PaymentDone";
 import ProductList from "./pages/home/bodys/product/ProductList";
-import Cart from "./pages/home/bodys/cart/Cart";
+import CartAndOrder from "./pages/home/bodys/cartAndOrder/CartAndOrder";
 import PaymentInfo from "./pages/home/bodys/payment/PaymentInfo";
 import CapturePayment from "./pages/home/bodys/payment/CapturePayment";
 import HandleCreateOrder from "./pages/home/bodys/payment/HandleCreateOrder";
+import HistoryOrder from "./pages/home/bodys/history/HistoryOrder";
 
 function App() {
   return (
@@ -61,8 +62,9 @@ function App() {
             <Route path="paypal/paymentDone" element={<PaymentDone />}></Route>
             <Route path="redirect/reviewPayment" element={<HandleCreateOrder />}></Route>
             <Route path="payment" element={<PaymentInfo />}></Route>
+            <Route path="historyOrder" element={<HistoryOrder />}></Route>
             <Route path="capture" element={<CapturePayment />}></Route>
-            <Route path="cart" element={<Cart />}/>
+            <Route path="cartAndOrder" element={<CartAndOrder />}/>
             <Route path="home" element={<Home />}>
               <Route path="" element={<ProductList />}/>
               {/* <Route path="checkout" element={<Checkout />}></Route> */}

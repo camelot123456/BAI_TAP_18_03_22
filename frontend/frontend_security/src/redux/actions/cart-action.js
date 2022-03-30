@@ -1,7 +1,7 @@
 import cartType from '../types/cart-type'
 import cartService from '../../services/cart-service'
 
-export const doAddProductIntoCart = (payload) => (dispatch) => {
+const doAddProductIntoCart = (payload) => (dispatch) => {
     return new Promise((resolve, reject) => {
         cartService.doAddProductIntoCart(payload)
         .then(res => {
@@ -17,7 +17,7 @@ export const doAddProductIntoCart = (payload) => (dispatch) => {
     })
 }
 
-export const doCountProductOfCart = (username) => (dispatch) => {
+const doCountProductOfCart = (username) => (dispatch) => {
     return new Promise((resolve, reject) => {
         cartService.doCountProductOfCart(username)
         .then(res => {
@@ -33,7 +33,7 @@ export const doCountProductOfCart = (username) => (dispatch) => {
     })
 }
 
-export const showProductCart = (username) => (dispatch) => {
+const showProductCart = (username) => (dispatch) => {
     return new Promise((resolve, reject) => {
         cartService.showProductCart(username)
         .then(res => {
@@ -49,7 +49,7 @@ export const showProductCart = (username) => (dispatch) => {
     })
 }
 
-export const doDeleteProductCart = (idProductCart) => (dispatch) => {
+const doDeleteProductCart = (idProductCart) => (dispatch) => {
     return new Promise((resolve, reject) => {
         cartService.doDeleteProductCart(idProductCart)
         .then(res => {
@@ -59,7 +59,7 @@ export const doDeleteProductCart = (idProductCart) => (dispatch) => {
     })
 }
 
-export const doPaymentOrder = (username) => (dispatch) => {
+const doPaymentOrder = (username) => (dispatch) => {
     return new Promise((resolve, reject) => {
         cartService.doPaymentOrder(username)
         .then(res => {
@@ -67,4 +67,12 @@ export const doPaymentOrder = (username) => (dispatch) => {
         })
         .catch(err => reject())
     })
+}
+
+export default {
+    doAddProductIntoCart,
+    doCountProductOfCart,
+    showProductCart,
+    doDeleteProductCart,
+    doPaymentOrder,
 }

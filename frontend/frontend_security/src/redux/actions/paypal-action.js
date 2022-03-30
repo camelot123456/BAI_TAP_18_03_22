@@ -21,7 +21,6 @@ const doCreateOrderPaypal = (payload) => (dispatch) => {
         paypalService.createOrder(payload)
         .then((res) => {
             if (res.status === 201) {
-                localStorage.setItem('orderCreate', JSON.stringify(res.data))
                 dispatch({
                     type: paypalType.DO_CREATE_ORDER,
                     payload: {
@@ -46,7 +45,6 @@ const showOrder = (idOrder) => (dispatch) => {
     return new Promise((resolve, reject) => {
         paypalService.showOrder(idOrder)
         .then((res) => {
-            localStorage.setItem('orderApproved', JSON.stringify(res.data))
             dispatch({
                 type: paypalType.SHOW_ORDER,
                 payload: {
@@ -62,8 +60,29 @@ const showOrder = (idOrder) => (dispatch) => {
 }
 
 const doUpdateOrder = (idOrder, payload) => (dispatch) => {
+    var data = [
+        {
+            op: 'replace',
+            path: `/purchase_units/@reference_id=='${payload.reference_id}'/shipping/address`,
+            value: {
+                address_line_1: payload.address_line_1,
+                address_line_2: payload.address_line_2,
+                admin_area_1: payload.admin_area_1,
+                admin_area_2: payload.admin_area_2,
+                postal_code: payload.postal_code,
+                country_code: payload.country_code
+            }
+        },
+        {
+            op: "replace",
+            path: `/purchase_units/@reference_id=='${payload.reference_id}'/shipping/name`,
+            value: {
+                full_name: payload.full_name
+            }
+        }
+    ]
     return new Promise((resolve, reject) => {
-        paypalService.doUpdateOrder(idOrder, payload)
+        paypalService.doUpdateOrder(idOrder, data)
         .then((res) => {
             resolve()
         })
@@ -116,21 +135,34 @@ const doCreateOrderBackend = (token, idUser) => async (dispatch) => {
             }
       
           }
-          console.log(payload)
         orderService.doCreateOrder(payload)
     } catch (error) {
         alert(error.message)
     }
 }
 
-const doCaptureOrder = (idOrder) => (dispatch) => {
+const doCaptureOrder = (idOrder, payerId) => async (dispatch) => {
     return new Promise((resolve, reject) => {
         paypalService.doCaptureOrder(idOrder)
         .then((res) => {
+            var payload = {
+                status: res.data.status,
+                finalCapture: res.data.purchase_units[0].payments.captures[0].final_capture,
+                payAuthStatus: res.data.purchase_units[0].payments.captures[0].status,
+                payAuthId: res.data.purchase_units[0].payments.captures[0].id,
+                payAuthAmount: res.data.purchase_units[0].payments.captures[0].amount.value,
+                payAuthGrossAmount: res.data.purchase_units[0].payments.captures[0].seller_receivable_breakdown.gross_amount.value,
+                payAuthPaypalFee: res.data.purchase_units[0].payments.captures[0].seller_receivable_breakdown.paypal_fee.value,
+                payAuthNetAmount: res.data.purchase_units[0].payments.captures[0].seller_receivable_breakdown.net_amount.value,
+                payAuthCreTime: res.data.purchase_units[0].payments.captures[0].create_time,
+                payAuthUpdTime: res.data.purchase_units[0].payments.captures[0].update_time,               
+              }
+             
+            orderService.doUpdateOrder(idOrder, payerId, payload)
             dispatch({
                 type: paypalType.DO_CAPTURE_ORDER,
                 payload: {
-                    responseCreateOrder: res.data
+                    orderCapture: res.data
                 }
             })
             resolve()
@@ -148,7 +180,6 @@ const doAuthorizePaymentForOrder = (idOrder) => (dispatch) => {
     return new Promise((resolve, reject) => {
         paypalService.doAuthorizePayment(idOrder)
         .then((res) => {
-            localStorage.setItem('orderAuthorize', JSON.stringify(res.data))
             dispatch({
                 type: paypalType.AUTHORIZE_PAYMENT_FOR_ORDER,
                 payload: {
