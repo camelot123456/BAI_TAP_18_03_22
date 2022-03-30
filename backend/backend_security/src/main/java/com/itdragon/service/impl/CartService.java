@@ -56,12 +56,15 @@ public class CartService implements ICartService{
 		}
 	}
 
+//	Khi thanh toán thành công thì xóa hết item trong cart của user đó, 
+//	và xóa luôn cả cart của user đó
 	@Transactional
 	@Override
 	public void paymentOrder(String username) {
 		// TODO Auto-generated method stub
 		UserEntity user = userRepo.findByUsername(username);
 		user.getCarts().get(0).getProductCartArr().stream().forEach(pc -> productCartRepo.deleteById(pc.getId()));
+		user.getCarts().stream().forEach(c -> cartRepo.deleteById(c.getId()));
 	}
 
 }

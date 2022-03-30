@@ -14,7 +14,6 @@ function PaymentInfo() {
   const navigate = useNavigate();
 
   const productCart = useSelector((state) => state.cartReducer.productCart);
-  const responseCreateOrder = useSelector((state) => state.cartReducer.responseCreateOrder);
 
   useEffect(() => {
     dispatch(showProductCart(accessToken.sub));
@@ -70,16 +69,7 @@ function PaymentInfo() {
     .then(() => {
         localStorage.setItem("orderPaypal", JSON.stringify(data))
     })
-    // dispatch(doCreateOrder({
-    //   idOrder: data.purchase_units[0].invoice_id,
-    //   description: data.purchase_units[0].description,
-    //   intent: data.intent,
-    //   items: productCart,
-    //   total: data.purchase_units[0].amount.value,
-    //   currencyCode: data.purchase_units[0].amount.currency_code
-    // }))
   };
-  // console.log(responseCreateOrder)
 
   return (
     <>
