@@ -116,6 +116,35 @@ public class OrderEntity {
 	
 	@Column(name = "[net_amount]", columnDefinition = "float")
 	private Double payAuthNetAmount;
+	
+//	------------------------------- Refunds -----------------------------------
+	
+	@Column(name = "[id_refund]", columnDefinition = "varchar(256)")
+	private String idRefund;
+	
+	@Column(name = "[gross_amount_refunded]", columnDefinition = "float")
+	private Double grossAmountRefund;
+	
+	@Column(name = "[paypal_fee_refunded]", columnDefinition = "float")
+	private Double paypalFeeRefund;
+	
+	@Column(name = "[net_amount_refund]", columnDefinition = "float")
+	private Double netAmountRefund;
+	
+	@Column(name = "[create_time_refund]", columnDefinition = "datetime")
+	private Date createTimeRefund;
+	
+	@Column(name = "[update_time_refund]", columnDefinition = "datetime")
+	private Date updateTimeRefund;
+
+	@Column(name = "[note_to_payer]", columnDefinition = "nvarchar(512)")
+	private String noteRefund;
+	
+	@Column(name = "[status_refund]", columnDefinition = "nvarchar(512)")
+	private String statusRefund;
+	
+	@Column(name = "[total_refunded_amount]", columnDefinition = "float")
+	private Double totalRefundedAmount;
 		
 //	------------------------------- payer -----------------------------------	
 	

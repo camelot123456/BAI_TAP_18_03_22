@@ -102,6 +102,8 @@ function CapturePayment() {
               }
               dispatch(orderActions.doUpdateOrder(dataPatch.token, dataPatch.payerId, dataPatch.payload))
             })
+            .catch(() => {
+            })
           }
 
           const handlePayment = (values) => {
@@ -109,11 +111,9 @@ function CapturePayment() {
             dispatch(paypalAction.doCaptureOrder(order.idOrder, order.idPayer))
             .then(() => {
               dispatch(cartActions.doPaymentOrder(accessToken.sub))
-              navigate('/cartAndOrder')
-            })
-            .finally(() => {
               dispatch(cartActions.doCountProductOfCart(accessToken.sub))
               dispatch(cartActions.showProductCart(accessToken.sub))
+              navigate('/cartAndOrder')
             })
           }
 
@@ -122,6 +122,16 @@ function CapturePayment() {
             .then(() => {
               navigate('/cartAndOrder')
             })
+          }
+
+          const handleRefund = (values) => {
+            let note = prompt('Why do you want to refund your order?')
+            if (note != null) {
+              dispatch(orderActions.doUpdateStatusRefund(order.idOrder, order.idPayer, {noteRefund: note}))
+              .then(() => {
+                navigate('/cartAndOrder')
+              })
+            }
           }
 
 
@@ -229,15 +239,51 @@ function CapturePayment() {
                       </div>
                     </>
                   )}
+
+                    {order.status === 'REFUND' && (
+                      <div style={{color: 'green', backgroundColor: '#e5ffe5', padding: '12px'}}>
+                        <h3 style={{margin: "0px 0px"}}>Your refund request has been sent. Please wait.</h3>
+                      </div>
+                    )}
+
+                    {order.status === 'REFUND_SUCCESS' && (
+                      <div style={{color: 'green', backgroundColor: '#e5ffe5', padding: '12px'}}>
+                        <h3 style={{margin: "0px 0px"}}>Your refund request has been accepted.</h3>
+                      </div>
+                    )}
                   
+                    {order.status === 'REFUND_FAIL' && (
+                      <div style={{color: 'red', backgroundColor: '#fbd1d1', padding: '12px'}}>
+                        <h3 style={{margin: "0px 0px"}}>Your refund request has been denied.</h3>
+                      </div>
+                    )}
+
+                    {order.status === 'RECEIVED' && (
+                      <div style={{color: 'green', backgroundColor: '#e5ffe5', padding: '12px'}}>
+                        <h3 style={{margin: "0px 0px"}}>Thank you.</h3>
+                        <div>
+                          <label htmlFor="review">Review: </label><br />
+                          <textarea  id="review" type=""></textarea><br />
+                          <button>submit</button>
+                        </div>
+                      </div>
+                    )}
+
                   <br />
 
                   {order.finalCapture ? (
                     <>
                       <button type="button" onClick={() => handleCancel(values)}>Cancel</button>{'   '}
-                      {order.status !== 'RECEIVED' && (
+
+                      {(order.status === 'CREATED' || order.status === 'COMPLETED') && (
                         <>
-                          <button type="button" onClick={() => handleSave(values)}>Refund</button> {'   '}
+                          <button type="button" onClick={() => handleRefund(values)}>Refund</button> {'   '}
+                          <button type="button" onClick={() => handleReceived(values)}>Received</button> 
+                        </>
+                      )}
+                      
+                      { (order.status === 'REFUND_FAIL' || order.status === 'REFUND_SUCCESS') && (
+                        <>
                           <button type="button" onClick={() => handleReceived(values)}>Received</button> 
                         </>
                       )}

@@ -29,19 +29,6 @@ public class OrderController {
 	@Autowired
 	private IItemService itemServ;
 	
-	@PostMapping("/orders/create")
-	public ResponseEntity<?> doCreateOrder(@RequestBody OrderEntity order) {
-		return ResponseEntity.ok().body(orderServ.createOrder(order));
-	}
-	
-	@PatchMapping("/orders/patch")
-	public ResponseEntity<?> doPatchOrder(
-			@RequestBody OrderEntity order,
-			@Param("token") String token, 
-			@Param("PayerID") String PayerID) {
-		return ResponseEntity.ok().body(orderServ.updateOrderByIdOrderAndIdPayer(token, PayerID, order));
-	}
-	
 	@GetMapping("/orders/detail")
 	public ResponseEntity<?> showOrderDetail(
 			@Param("token") String token, 
@@ -58,6 +45,11 @@ public class OrderController {
 		return ResponseEntity.ok().body(orderServ.findAllByUsernameAndFinalCapture(username, false));
 	}
 	
+	@GetMapping("/orders/list/refund")
+	public ResponseEntity<?> showOrderStatusRefundList() {
+		return ResponseEntity.ok().body(orderServ.findAllOrderStatusRefund());
+	}
+	
 	@GetMapping("/orders/list/paid")
 	public ResponseEntity<?> showPaidOrderList(@Param("username") String username) {
 		return ResponseEntity.ok().body(orderServ.findAllByUsernameAndFinalCapture(username, true));
@@ -68,12 +60,17 @@ public class OrderController {
 		return ResponseEntity.ok().body(orderServ.findAllOrderPaidByUsernameAndStatusNotReceived(username));
 	}
 	
-	@DeleteMapping("/orders/delete")
-	public ResponseEntity<?> doDeleteOrder(
+	@PostMapping("/orders/create")
+	public ResponseEntity<?> doCreateOrder(@RequestBody OrderEntity order) {
+		return ResponseEntity.ok().body(orderServ.createOrder(order));
+	}
+	
+	@PostMapping("/orders/refund")
+	public ResponseEntity<?> doRefundOrder(
 			@Param("token") String token, 
-			@Param("PayerID") String PayerID) {
-		orderServ.deleteOrderByIdOrderAndIdPayer(token, PayerID);
-		return ResponseEntity.ok().build();
+			@Param("PayerID") String PayerID,
+			@RequestBody OrderEntity payload) {
+		return ResponseEntity.ok().body(orderServ.doRefundOrder(token, PayerID, payload));
 	}
 	
 	@PutMapping("/orders/update")
@@ -89,6 +86,44 @@ public class OrderController {
 			@Param("token") String token, 
 			@Param("PayerID") String PayerID) {
 		return ResponseEntity.ok().body(orderServ.updateStatusReceivedOrderByIdOrderAndIdPayer(token, PayerID));
+	}
+	
+	@PatchMapping("/orders/patch")
+	public ResponseEntity<?> doPatchOrder(
+			@RequestBody OrderEntity order,
+			@Param("token") String token, 
+			@Param("PayerID") String PayerID) {
+		return ResponseEntity.ok().body(orderServ.updateOrderByIdOrderAndIdPayer(token, PayerID, order));
+	}
+	
+	@PatchMapping("/orders/update/status/refundSuccess")
+	public ResponseEntity<?> doUpdateStatusRefundSuccess(
+			@Param("token") String token, 
+			@Param("PayerID") String PayerID) {
+		return ResponseEntity.ok().body(orderServ.updateStatusRefundSuccessOrderByIdOrderAndIdPayer(token, PayerID));
+	}
+	
+	@PatchMapping("/orders/update/status/refundFail")
+	public ResponseEntity<?> doUpdateStatusRefundFail(
+			@Param("token") String token, 
+			@Param("PayerID") String PayerID) {
+		return ResponseEntity.ok().body(orderServ.updateStatusRefundFailOrderByIdOrderAndIdPayer(token, PayerID));
+	}
+	
+	@PatchMapping("/orders/update/status/refund")
+	public ResponseEntity<?> doUpdateStatusRefund(
+			@RequestBody OrderEntity order,
+			@Param("token") String token, 
+			@Param("PayerID") String PayerID) {
+		return ResponseEntity.ok().body(orderServ.updateStatusRefundOrderByIdOrderAndIdPayer(token, PayerID, order));
+	}
+	
+	@DeleteMapping("/orders/delete")
+	public ResponseEntity<?> doDeleteOrder(
+			@Param("token") String token, 
+			@Param("PayerID") String PayerID) {
+		orderServ.deleteOrderByIdOrderAndIdPayer(token, PayerID);
+		return ResponseEntity.ok().build();
 	}
 
 }

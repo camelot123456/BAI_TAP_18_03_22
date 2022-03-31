@@ -5,7 +5,8 @@ const initialState = {
     orders: [],
     items: [],
     ordersPaid: [],
-    ordersUnReceive: []
+    ordersUnReceive: [],
+    ordersRefund: []
 }
 
 const orderReducer = (state = initialState, { type, payload }) => {
@@ -40,6 +41,13 @@ const orderReducer = (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 ordersUnReceive
+            }
+        case orderType.SHOW_ORDER_STATUS_REFUND:
+            var ordersRefund = {...state.ordersRefund}
+            ordersRefund = payload.ordersRefund
+            return {
+                ...state,
+                ordersRefund
             }
         default:
             return state;

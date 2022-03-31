@@ -37,6 +37,30 @@ const doUpdateOrderStatusReceive = (token, payerId) => {
     return httpCommon().patch(`${URL_BASE}/pri/orders/update/status/receive?token=${token}&PayerID=${payerId}`)
 }
 
+const doUpdateStatusRefund = (token, payerId, note) => {
+    return httpCommon().patch(`${URL_BASE}/pri/orders/update/status/refund?token=${token}&PayerID=${payerId}`, note)
+}
+
+const doUpdateStatusCompleted = (token, payerId) => {
+    return httpCommon().patch(`${URL_BASE}/pri/orders/update/status/completed?token=${token}&PayerID=${payerId}`)
+}
+
+const doUpdateStatusRefundSuccess = (token, payerId) => {
+    return httpCommon().patch(`${URL_BASE}/pri/orders/update/status/refundSuccess?token=${token}&PayerID=${payerId}`)
+}
+
+const doUpdateStatusRefundFail = (token, payerId) => {
+    return httpCommon().patch(`${URL_BASE}/pri/orders/update/status/refundFail?token=${token}&PayerID=${payerId}`)
+}
+
+const showOrderStatusRefund = () => {
+    return httpCommon().get(`${URL_BASE}/pri/orders/list/refund`)
+}
+
+const updateOrderRefundBackend = (token, payerId, payload) => {
+    return httpCommon().post(`${URL_BASE}/pri/orders/refund?token=${token}&PayerID=${payerId}`, payload)
+}
+
 export default {
     doCreateOrder, 
     showOrderDetail, 
@@ -46,5 +70,11 @@ export default {
     showPaidOrderList, 
     doDeleteOrder, 
     doUpdateOrder,
-    doUpdateOrderStatusReceive
+    doUpdateOrderStatusReceive,
+    doUpdateStatusRefund,
+    doUpdateStatusCompleted,
+    showOrderStatusRefund,
+    doUpdateStatusRefundSuccess,
+    doUpdateStatusRefundFail,
+    updateOrderRefundBackend
 }

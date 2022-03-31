@@ -20,5 +20,15 @@ public interface IOrderServie {
 	
 	public OrderEntity updateStatusReceivedOrderByIdOrderAndIdPayer(String idOrder, String idPayer);
 	
+	public OrderEntity updateStatusRefundOrderByIdOrderAndIdPayer(String idOrder, String idPayer, OrderEntity orderPayload);
+	
+	public OrderEntity updateStatusRefundSuccessOrderByIdOrderAndIdPayer(String idOrder, String idPayer);
+	
+	public OrderEntity updateStatusRefundFailOrderByIdOrderAndIdPayer(String idOrder, String idPayer);
+	
+	public OrderEntity doRefundOrder(String idOrder, String idPayer, OrderEntity orderPayload);
+	
+	public List<OrderEntity> findAllOrderStatusRefund();
+	
 	public List<OrderEntity> findAllOrderPaidByUsernameAndStatusNotReceived(String username);
 }

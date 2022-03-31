@@ -28,4 +28,12 @@ public interface IOrderRepository extends JpaRepository<OrderEntity, Long>{
 			nativeQuery = true)
 	public List<OrderEntity> findAllOrderPaidByUsernameAndStatusNotReceived(String username);
 	
+	
+	@Query(value = "select o.* "
+			+ "from orders o "
+			+ "where o.[status] = 'REFUND' "
+			+ "order by o.create_time desc",
+			nativeQuery = true)
+	public List<OrderEntity> findAllOrderStatusRefund();
+	
 }

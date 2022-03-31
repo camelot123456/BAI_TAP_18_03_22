@@ -99,7 +99,6 @@ const showOrderAuthorize = (idOrder) => {
 }
 
 const doCapturePayment = (idOrder, payload) => {
-    console.log(payload)
     const token = localStorage.getItem(ACCESS_TOKEN_PAYPAL)
     return axios.request({
         url: `/v2/payments/authorizations/${idOrder}/capture`,
@@ -113,4 +112,42 @@ const doCapturePayment = (idOrder, payload) => {
     })
 }
 
-export default {oauth2Paypal, createOrder, showOrder, doUpdateOrder, doCaptureOrder, doAuthorizePayment, showOrderAuthorize, doCapturePayment}
+const doRefundPayment = (idCapture, payload) => {
+    const token = localStorage.getItem(ACCESS_TOKEN_PAYPAL)
+    return axios.request({
+        url: `/v2/payments/captures/${idCapture}/refund`,
+        method: 'POST',
+        baseURL: URL_PAYPAL,
+        data: payload,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    })
+}
+
+const showRefundDetail = (idRefund) => {
+    const token = localStorage.getItem(ACCESS_TOKEN_PAYPAL)
+    return axios.request({
+        url: `/v2/payments/refunds/${idRefund}`,
+        method: 'GET',
+        baseURL: URL_PAYPAL,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    })
+}
+
+export default {
+    oauth2Paypal, 
+    createOrder, 
+    showOrder, 
+    doUpdateOrder, 
+    doCaptureOrder, 
+    doAuthorizePayment, 
+    showOrderAuthorize, 
+    doCapturePayment,
+    doRefundPayment,
+    showRefundDetail
+}

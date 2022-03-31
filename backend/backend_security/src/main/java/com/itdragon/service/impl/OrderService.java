@@ -142,4 +142,53 @@ public class OrderService implements IOrderServie{
 		return orderRepo.findAllOrderPaidByUsernameAndStatusNotReceived(username);
 	}
 
+	@Transactional
+	@Override
+	public OrderEntity updateStatusRefundOrderByIdOrderAndIdPayer(String idOrder, String idPayer, OrderEntity orderPayload) {
+		// TODO Auto-generated method stub
+		OrderEntity order = orderRepo.findByIdOrderAndIdPayer(idOrder, idPayer);
+		order.setStatus(EOrderState.REFUND);
+		order.setNoteRefund(orderPayload.getNoteRefund());
+		return orderRepo.save(order);
+	}
+
+	@Override
+	public List<OrderEntity> findAllOrderStatusRefund() {
+		// TODO Auto-generated method stub
+		return orderRepo.findAllOrderStatusRefund();
+	}
+
+	@Override
+	public OrderEntity updateStatusRefundSuccessOrderByIdOrderAndIdPayer(String idOrder, String idPayer) {
+		// TODO Auto-generated method stub
+		OrderEntity order = orderRepo.findByIdOrderAndIdPayer(idOrder, idPayer);
+		order.setStatus(EOrderState.REFUND_SUCCESS);
+		return orderRepo.save(order);
+	}
+
+	@Override
+	public OrderEntity updateStatusRefundFailOrderByIdOrderAndIdPayer(String idOrder, String idPayer) {
+		// TODO Auto-generated method stub
+		OrderEntity order = orderRepo.findByIdOrderAndIdPayer(idOrder, idPayer);
+		order.setStatus(EOrderState.REFUND_FAIL);
+		return orderRepo.save(order);
+	}
+
+	@Transactional
+	@Override
+	public OrderEntity doRefundOrder(String idOrder, String idPayer, OrderEntity orderPayload) {
+		// TODO Auto-generated method stub
+		OrderEntity order = orderRepo.findByIdOrderAndIdPayer(idOrder, idPayer); 
+		order.setStatus(EOrderState.REFUND_SUCCESS);
+		order.setIdRefund(orderPayload.getIdRefund());
+		order.setGrossAmountRefund(orderPayload.getGrossAmountRefund());
+		order.setPaypalFeeRefund(orderPayload.getPaypalFeeRefund());
+		order.setNetAmountRefund(orderPayload.getNetAmountRefund());
+		order.setCreateTimeRefund(orderPayload.getCreateTimeRefund());
+		order.setUpdateTimeRefund(orderPayload.getUpdateTimeRefund());
+		order.setTotalRefundedAmount(orderPayload.getTotalRefundedAmount());
+		order.setStatusRefund(orderPayload.getStatusRefund());
+		return orderRepo.save(order);
+	}
+
 }

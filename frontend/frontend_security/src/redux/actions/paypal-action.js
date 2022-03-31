@@ -212,9 +212,9 @@ const showOrderAuthorize = (idOrder) => (dispatch) => {
     })
 }
 
-const doCapturePayment = (idOrder, payload) => (dispatch) => {
+const doCapturePayment = (idCapture, payload) => (dispatch) => {
     return new Promise((resolve, reject) => {
-        paypalService.doCapturePayment(idOrder, payload)
+        paypalService.doCapturePayment(idCapture, payload)
         .then((res) => {
             resolve()
         })
@@ -222,6 +222,55 @@ const doCapturePayment = (idOrder, payload) => (dispatch) => {
             reject(err)
         })
     })
+}
+
+const doRefundPayment = (idCapture, idOrder, payerId, payload) => async (dispatch) => {
+    // return new Promise((resolve, reject) => {
+    //     paypalService.doRefundPayment(idCapture, payload)
+    //     .then((res) => {
+    //         var responseRefundDetail = paypalService.showRefundDetail(res.data.id)
+    //         console.log(responseRefundDetail.data)
+    //         var payloadRequest = {
+    //             idRefund: responseRefundDetail.id,
+    //             grossAmountRefund: responseRefundDetail.seller_payable_breakdown.gross_amount.value,
+    //             paypalFeeRefund: responseRefundDetail.seller_payable_breakdown.paypal_fee.value,
+    //             netAmountRefund: responseRefundDetail.seller_payable_breakdown.net_amount.value,
+    //             createTimeRefund: responseRefundDetail.create_time,
+    //             updateTimeRefund: responseRefundDetail.update_time,
+    //             totalRefundedAmount: responseRefundDetail.seller_payable_breakdown.total_refunded_amount.value,
+    //             statusRefund: responseRefundDetail.status
+    //         }
+    //         console.log(payloadRequest)
+    //         orderService.updateOrderRefundBackend(idOrder, payerId, payloadRequest)
+    //         resolve()
+    //     })
+    //     .catch((err) => {
+    //         reject(err)
+    //     })
+    // })
+        try {
+            const contentResponse = await paypalService.doRefundPayment(idCapture, payload)
+        
+            console.log(contentResponse.data)
+
+            var responseRefundDetail = await paypalService.showRefundDetail(contentResponse.data.id)
+
+            console.log(responseRefundDetail.data)
+            var payloadRequest = {
+                idRefund: responseRefundDetail.id,
+                grossAmountRefund: responseRefundDetail.seller_payable_breakdown.gross_amount.value,
+                paypalFeeRefund: responseRefundDetail.seller_payable_breakdown.paypal_fee.value,
+                netAmountRefund: responseRefundDetail.seller_payable_breakdown.net_amount.value,
+                createTimeRefund: responseRefundDetail.create_time,
+                updateTimeRefund: responseRefundDetail.update_time,
+                totalRefundedAmount: responseRefundDetail.seller_payable_breakdown.total_refunded_amount.value,
+                statusRefund: responseRefundDetail.status
+            }
+            
+            await orderService.updateOrderRefundBackend(idOrder, payerId, payloadRequest)
+            return contentResponse
+        } catch (error) {
+        }
 }
 
 export default {
@@ -233,5 +282,6 @@ export default {
     doAuthorizePaymentForOrder,
     showOrderAuthorize,
     doCapturePayment,
-    doCreateOrderBackend
+    doCreateOrderBackend,
+    doRefundPayment
 }

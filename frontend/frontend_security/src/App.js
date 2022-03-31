@@ -20,16 +20,16 @@ import ForgotPassword from "./pages/auth/bodys/ForgotPassword";
 import EmailSent from "./pages/auth/bodys/EmailSent";
 import FormResetPassword from "./pages/auth/bodys/FormResetPassword";
 import PasswordChanged from "./pages/auth/bodys/PasswordChanged";
-import Checkout from "./pages/home/bodys/payment/Checkout";
 import PaymentCancel from "./pages/home/bodys/payment/PaymentCancel";
 import ReviewPayment from "./pages/home/bodys/payment/ReviewPayment";
-import PaymentDone from "./pages/home/bodys/payment/PaymentDone";
 import ProductList from "./pages/home/bodys/product/ProductList";
-import CartAndOrder from "./pages/home/bodys/cartAndOrder/CartAndOrder";
+import CartAndOrder from "./pages/home/bodys/cartAndOrder";
 import PaymentInfo from "./pages/home/bodys/payment/PaymentInfo";
 import CapturePayment from "./pages/home/bodys/payment/CapturePayment";
 import HandleCreateOrder from "./pages/home/bodys/payment/HandleCreateOrder";
 import HistoryOrder from "./pages/home/bodys/history/HistoryOrder";
+import RefundList from "./pages/admin/bodys/transactions/RefundList";
+import RefundDetail from "./pages/admin/bodys/transactions/RefundDetail";
 
 function App() {
   return (
@@ -59,7 +59,6 @@ function App() {
           <Route path="" element={<HomeLayout />}>
             <Route path="paypal/cancel" element={<PaymentCancel />}></Route>
             <Route path="paypal/reviewPayment" element={<ReviewPayment />}></Route>
-            <Route path="paypal/paymentDone" element={<PaymentDone />}></Route>
             <Route path="redirect/reviewPayment" element={<HandleCreateOrder />}></Route>
             <Route path="payment" element={<PaymentInfo />}></Route>
             <Route path="historyOrder" element={<HistoryOrder />}></Route>
@@ -67,7 +66,6 @@ function App() {
             <Route path="cartAndOrder" element={<CartAndOrder />}/>
             <Route path="home" element={<Home />}>
               <Route path="" element={<ProductList />}/>
-              {/* <Route path="checkout" element={<Checkout />}></Route> */}
             </Route>
             
             <Route path="error403" element={<PageError403 />}></Route>
@@ -88,6 +86,8 @@ function App() {
             <Route path="users/add" element={<UserCreate edit={false} />} />
             <Route path="users/:idUser/edit" element={<UserUpdate edit={true} />} />
             <Route path="roles" element={<Roles />}></Route>
+            <Route path="refundList" element={<RefundList />}></Route>
+            <Route path="refund" element={<RefundDetail />}></Route>
           </Route>
 
         </Route>

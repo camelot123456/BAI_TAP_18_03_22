@@ -122,6 +122,60 @@ const doUpdateOrderStatusReceive = (token, payerId) => (dispatch) => {
     })
 }
 
+const doUpdateStatusRefund = (token, payerId, note) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        orderServ.doUpdateStatusRefund(token, payerId, note)
+        .then((res) => {
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+const doUpdateStatusRefundSuccess = (token, payerId) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        orderServ.doUpdateStatusRefundSuccess(token, payerId)
+        .then((res) => {
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+const doUpdateStatusRefundFail = (token, payerId) => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        orderServ.doUpdateStatusRefundFail(token, payerId)
+        .then((res) => {
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+const showOrderStatusRefund = () => (dispatch) => {
+    return new Promise((resolve, reject) => {
+        orderServ.showOrderStatusRefund()
+        .then((res) => {
+            dispatch({
+                type: orderType.SHOW_ORDER_STATUS_REFUND,
+                payload: {
+                    ordersRefund: res.data
+                }
+            })
+            resolve()
+        })
+        .catch((err) => {
+            reject(err)
+        })
+    })
+}
+
 export default {
     doCreateOrder, 
     showOrderDetail, 
@@ -130,5 +184,9 @@ export default {
     showUnpaidOrderList, 
     doDeleteOrder, 
     showPaidOrderList,
-    doUpdateOrderStatusReceive
+    doUpdateOrderStatusReceive,
+    doUpdateStatusRefund,
+    showOrderStatusRefund,
+    doUpdateStatusRefundSuccess,
+    doUpdateStatusRefundFail
 }
