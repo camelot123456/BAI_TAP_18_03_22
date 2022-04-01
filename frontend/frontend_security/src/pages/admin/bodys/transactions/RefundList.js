@@ -10,8 +10,6 @@ function RefundList() {
     const navigate = useNavigate()
     const orders = useSelector(state => state.orderReducer.ordersRefund)
 
-    console.log(orders)
-
     useEffect(() => {
         dispatch(orderActions.showOrderStatusRefund())
     }, [])

@@ -90,7 +90,7 @@ public class OrderService implements IOrderServie{
 		order.setAdArea1(orderPayload.getAdArea1());
 		order.setAdArea2(orderPayload.getAdArea2());
 		order.setPosCode(orderPayload.getPosCode());
-		order.setCouCodePayer(orderPayload.getCouCodePayer());
+		order.setCouCode(orderPayload.getCouCode());
 		return orderRepo.save(order);
 	}
 

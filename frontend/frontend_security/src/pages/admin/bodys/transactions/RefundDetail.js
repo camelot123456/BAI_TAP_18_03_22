@@ -35,6 +35,9 @@ function RefundDetail() {
                 note_to_payer: order.noteRefund
             }
             dispatch(paypalActions.doRefundPayment(order.payAuthId, order.idOrder, order.idPayer, payload))
+            .then(() => {
+                navigate('/admin/refundList')
+            })
         } return
     }
 
