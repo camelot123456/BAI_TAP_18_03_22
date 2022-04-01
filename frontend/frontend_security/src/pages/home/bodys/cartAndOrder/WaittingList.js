@@ -1,12 +1,7 @@
 function WaittingList(props) {
 
-    const {orders, onDeleteOrder, onPaymentOrder} = props
+    const {orders, onPaymentOrder} = props
 
-    const handleDeleteOrder = (idOrder, payerId) => {
-        if (onDeleteOrder) {
-            onDeleteOrder(idOrder, payerId)
-        }
-    }
     const handlePaymentOrder = (idOrder, payerId) => {
         if (onPaymentOrder) {
             onPaymentOrder(idOrder, payerId)
@@ -43,7 +38,6 @@ function WaittingList(props) {
                                         <td className="td-1">{or.idPayer}</td>
                                         <td className="td-1">{or.total}</td>
                                         <td className="td-1">
-                                            {/* <button onClick={() => handleDeleteOrder(or.idOrder, or.idPayer)}>Delete</button> */}
                                             <button onClick={() => handlePaymentOrder(or.idOrder, or.idPayer)}>Detail</button>
                                         </td>
                                     </tr>

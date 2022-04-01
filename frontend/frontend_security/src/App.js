@@ -30,7 +30,6 @@ import HandleCreateOrder from "./pages/home/bodys/payment/HandleCreateOrder";
 import HistoryOrder from "./pages/home/bodys/history/HistoryOrder";
 import RefundList from "./pages/admin/bodys/transactions/RefundList";
 import RefundDetail from "./pages/admin/bodys/transactions/RefundDetail";
-import SignupForm from "./pages/home/bodys/cartAndOrder/SignupForm";
 
 function App() {
   return (
@@ -65,7 +64,6 @@ function App() {
             <Route path="historyOrder" element={<HistoryOrder />}></Route>
             <Route path="capture" element={<CapturePayment />}></Route>
             <Route path="cartAndOrder" element={<CartAndOrder />}/>
-            <Route path="" element={<SignupForm />} />
             <Route path="home" element={<Home />}>
               <Route path="" element={<ProductList />}/>
             </Route>

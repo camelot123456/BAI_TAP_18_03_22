@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import * as Yup from 'yup'
-import { Form, Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 
 
 import paypalAction from "../../../../redux/actions/paypal-action";
@@ -17,7 +17,6 @@ function CapturePayment() {
 
     const items = useSelector((state) => state.orderReducer.items)
     const [searchParams, setSearchParams] = useSearchParams()
-    const orderValues = useRef({})
     const authProvider = useSelector(state => state.authReducer.authProvider)
     const accessToken = parseJwt(authProvider.accessToken)
 
@@ -27,23 +26,21 @@ function CapturePayment() {
         searchParams.get('token'), 
         searchParams.get('PayerID')
         ))
-      }, [])
-
-      
+    }, [])
 
     const formik = useFormik({
       initialValues : {
-        fullName: orderValues.current.fullName || '',
-        addressLine1: orderValues.current.addressLine1 || '',
-        addressLine2: orderValues.current.addressLine2 || '',
-        adminArea1: orderValues.current.adminArea1 || '',
-        adminArea2: orderValues.current.adminArea2 || '',
-        postalCode: orderValues.current.postalCode || '',
-        addressCountryCode: orderValues.current.addressCountryCode || ''
+        fullName: '',
+        addressLine1: '',
+        addressLine2: '',
+        adminArea1: '',
+        adminArea2: '',
+        postalCode: '',
+        addressCountryCode: ''
       },
       validationSchema : Yup.object({
         fullName: Yup.string().max(300).matches(/^([\p{L}'][ \p{L}'-]*[\p{L}]){3,}$/u, { excludeEmptyString: true, message: 'Invalid name'}).required(),
-        addressLine1: Yup.string().max(300).required(),
+        addressLine1: Yup.string().max(300).matches(/^\d+\s[A-z]+\s[A-z]+/g, { excludeEmptyString: true, message: 'Invalid name'}).required(),
         adminArea1: Yup.string().max(300).required(),
         addressCountryCode: Yup.string().min(2).max(2).required(),
         postalCode: Yup.string().matches(/^[0-9]+$/, "Must be only digits").max(60).required(),
@@ -52,22 +49,17 @@ function CapturePayment() {
     })
 
     const order = useSelector((state) => {
-      var values = {
-        fullName : state.orderReducer.order.nameShippingCus || '',
-        addressLine1 : state.orderReducer.order.addLine1Cus || '',
-        addressLine2 : state.orderReducer.order.addLine2Cus || '',
-        adminArea1 : state.orderReducer.order.adArea1 || '',
-        adminArea2 : state.orderReducer.order.adArea2 || '',
-        addressCountryCode : state.orderReducer.order.couCode || '',
-        postalCode : state.orderReducer.order.posCode || ''
-      }
-
-      // formik.setFieldValue('fullname', state.orderReducer.order.nameShippingCus)
-      orderValues.current = values
+      formik.initialValues.fullName = state.orderReducer.order.nameShippingCus || ''
+      formik.initialValues.addressLine1 = state.orderReducer.order.addLine1Cus || ''
+      formik.initialValues.addressLine2 = state.orderReducer.order.addLine2Cus || ''
+      formik.initialValues.adminArea1 = state.orderReducer.order.adArea1 || ''
+      formik.initialValues.adminArea2 = state.orderReducer.order.adArea2 || ''
+      formik.initialValues.addressCountryCode = state.orderReducer.order.couCode || ''
+      formik.initialValues.postalCode = state.orderReducer.order.posCode || ''
       return state.orderReducer.order
     })
 
-    const handleCancel = (values) => {
+    const handleCancel = () => {
       // TODO: delete order and order items
       navigate('/cartAndOrder')
     }
@@ -107,14 +99,16 @@ function CapturePayment() {
       
       dispatch(paypalAction.doCaptureOrder(order.idOrder, order.idPayer))
       .then(() => {
-        console.log("success")
         dispatch(cartActions.doPaymentOrder(accessToken.sub))
         dispatch(cartActions.doCountProductOfCart(accessToken.sub))
         dispatch(cartActions.showProductCart(accessToken.sub))
         navigate('/cartAndOrder')
       })
       .catch(() => {
-        console.log("error")
+      })
+      .finally(() => {
+        dispatch(cartActions.doCountProductOfCart(accessToken.sub))
+        dispatch(cartActions.showProductCart(accessToken.sub))
       })
     }
 
@@ -297,9 +291,10 @@ function CapturePayment() {
               </>
             ) : (
               <>
-                <button type="button" onClick={() => handleCancel}>Cancel</button>{'   '}
-                <button type="button" disabled={!(formik.isValid && formik.dirty)} onClick={() => handleSave(formik.values)}>Save</button> {'   '}
-                <button type="button" disabled={!(formik.isValid && formik.dirty)} onClick={() => handlePayment(formik.values)}>Payment</button> 
+                {/* formik.isValid && formik.dirty */}
+                <button type="button" onClick={handleCancel}>Cancel</button>{'   '}
+                <button type="button" disabled={!(formik.isValid)} onClick={() => handleSave(formik.values)}>Save</button> {'   '}
+                <button type="button" disabled={!(formik.isValid)} onClick={() => handlePayment(formik.values)}>Payment</button> 
               </>
             )}
 

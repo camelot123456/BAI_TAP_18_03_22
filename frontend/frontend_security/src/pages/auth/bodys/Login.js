@@ -1,6 +1,6 @@
 import { Form, Formik } from "formik";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {Link, useNavigate} from "react-router-dom"
 import * as Yup from 'yup'
 
@@ -14,8 +14,6 @@ function Login() {
   const [error, setError] = useState("")
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const auth = useSelector(state => state.authReducer.authProvider)
   
   const initialValues = {
     username: '',
@@ -70,6 +68,11 @@ function Login() {
             <button style={{ maxWidth: "100px" }} type="submit">
               Sign In
             </button>
+            <hr />
+            {/* <fb:login-button 
+              scope="public_profile,email"
+              onlogin="checkLoginState();">
+            </fb:login-button> */}
             <hr />
             <Link style={{marginRight: '16px'}} to="/auth/register">Register</Link>
             <Link to="/auth/forgotPassword">Forgot Password ?</Link>

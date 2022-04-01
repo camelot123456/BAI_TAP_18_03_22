@@ -117,13 +117,6 @@ const doCreateOrderBackend = (token, idUser) => async (dispatch) => {
                     quantity: item.quantity
                 }
             }),
-            // payAuthStatus: '',
-            // payAuthId: '',
-            // payAuthamount: '',
-            // payAuthExpTime: '',
-            // payAuthCreTime: '',
-            // payAuthUpdTime: '',
-            // items: orderDetail.data.purchase_units[0].items
       
             givenNamePayer: orderDetail.data.payer.name.given_name,
             surnamePayer: orderDetail.data.payer.name.surname,

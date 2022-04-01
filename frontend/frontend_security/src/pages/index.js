@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
 import { ACCESS_TOKEN, KEY_AUTH } from "../constants/system-constant";
-import { removeAuth, setAuth } from "../redux/actions/auth-action";
+import { setAuth } from "../redux/actions/auth-action";
 
 function MainLayout () {
 

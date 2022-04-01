@@ -1,24 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import paypalAction from "../../../../redux/actions/paypal-action";
-import { doCreateOrder } from '../../../../redux/actions/order-action'
 
 function ReviewPayment() {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
 
-  const [orderCreate, setorderCreate] = useState(JSON.parse(localStorage.getItem("orderCreate")))
-  const [orderPaypal, setOrderPaypal] = useState(JSON.parse(localStorage.getItem("orderPaypal")))
-  const [orderAuthorize, setOrderAuthorize] = useState(JSON.parse(localStorage.getItem("orderAuthorize")))
+  const [orderCreate, setOrderCreate] = useState(JSON.parse(localStorage.getItem("orderCreate")))
   const orderApproved = useSelector((state) => state.paypalReducer.orderApproved)
-
-  // console.log({
-  //   orderCreate: orderCreate,
-  //   orderPaypal: orderPaypal,
-  //   orderApproved: orderApproved,
-  //   orderAuthorize: orderAuthorize
-  // })
 
   useEffect(() => {
     dispatch(paypalAction.showOrder(orderCreate.id))
@@ -42,14 +30,6 @@ function ReviewPayment() {
         posCode: orderApproved.purchase_units[0].shipping.address.postal_code,
         couCode: orderApproved.purchase_units[0].shipping.address.country_code,
   
-        // payAuthStatus: '',
-        // payAuthId: '',
-        // payAuthamount: '',
-        // payAuthExpTime: '',
-        // payAuthCreTime: '',
-        // payAuthUpdTime: '',
-        // items: orderApproved.purchase_units[0].items
-  
         givenNamePayer: orderApproved.payer.name.given_name,
         surnamePayer: orderApproved.payer.name.surname,
         emailPayer: orderApproved.payer.email_address,
@@ -57,11 +37,6 @@ function ReviewPayment() {
         couCodePayer: orderApproved.payer.address.country_code,
   
       }
-      console.log(payload)
-      // dispatch(doCreateOrder(payload))
-      // .then(() => {
-      //   navigate('/capture')
-      // })
     })
   }
 

@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN, ACCESS_TOKEN_PAYPAL } from '../../constants/system-constant'
+import { ACCESS_TOKEN } from '../../constants/system-constant'
 import authService from  '../../services/auth-service'
 import authTypes from '../types/auth-type'
 
@@ -72,6 +72,9 @@ export const doChangePassword = (data) => (dispatch) => {
         .then(res => {
             resolve()
         })
-        .catch(err => reject())
+        .catch(err => {
+            alert(err)
+            reject()
+        })
     })
 }

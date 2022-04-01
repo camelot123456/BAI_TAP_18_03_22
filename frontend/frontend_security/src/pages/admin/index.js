@@ -13,13 +13,13 @@ function AdminLayout () {
 
     return (
         <>
-            {accessToken ? (
+            {accessToken && accessToken.roles.some(role => role === 'ROLE_ADMIN' || role === 'ROLE_SUPER_ADMIN') ? (
                 <>
                     <Header />
                     <Outlet />
                 </>
             ) : (
-                <Navigate to="/auth/login" />
+                <Navigate to="/error403" />
             )}
         </>
     )

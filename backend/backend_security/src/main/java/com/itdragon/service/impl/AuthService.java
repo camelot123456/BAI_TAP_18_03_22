@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.itdragon.config.AppProperties;
 import com.itdragon.entity.UserEntity;
@@ -126,10 +127,10 @@ public class AuthService implements IAuthService{
 				userChangePassword.setPassword(passwordEncoder.encode(user.getPassword()));
 				userRepo.save(userChangePassword);
 			}
-			return HttpStatus.OK;
+			throw new ResponseStatusException(HttpStatus.OK);
 		} catch (NoSuchElementException e) {
 			// TODO: handle exception
-			return HttpStatus.EXPECTATION_FAILED;
+			throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Request to reset password already used");
 		}
 	}
 

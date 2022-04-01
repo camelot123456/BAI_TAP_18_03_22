@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import parseJwt from "../../../../commons/jwt-common";
 import cartActions from "../../../../redux/actions/cart-action";
 import paypalAction from "../../../../redux/actions/paypal-action";
-import {doCreateOrder } from "../../../../redux/actions/order-action"
 
 function PaymentInfo() {
   const authProvider = useSelector((state) => state.authReducer.authProvider);
   const accessToken = parseJwt(authProvider.accessToken);
   const [referenceId, setReferenceId] = useState(new Date().valueOf());
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const productCart = useSelector((state) => state.cartReducer.productCart);
 

@@ -5,7 +5,6 @@ import {useNavigate} from "react-router-dom"
 import parseJwt from "../../../../commons/jwt-common";
 import cartActions from "../../../../redux/actions/cart-action";
 import orderActions from "../../../../redux/actions/order-action";
-import paypalActions from "../../../../redux/actions/paypal-action";
 import Cart from "./Cart";
 import Order from "./Order";
 import WaittingList from "./WaittingList";
@@ -52,14 +51,6 @@ function CartAndOrder () {
         navigate(`/capture?token=${idOrder}&PayerID=${payerId}`)
     }
 
-    const handleFinishResponse = (idOrder, payerId) => {
-
-    }
-
-    const handleRefund = (idOrder, payerId) => {
-        
-    }
-
     return (
         <>
             <Cart 
@@ -76,7 +67,6 @@ function CartAndOrder () {
             <hr style={{margin : '8px 0px'}}/>
             <WaittingList 
                 orders={ordersPaid} 
-                onDeleteOrder={handleDeleteOrder} 
                 onPaymentOrder={handlePaymentOrder}
             />
             <hr style={{margin : '8px 0px'}}/>

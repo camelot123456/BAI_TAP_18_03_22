@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Form, Formik } from "formik"
 import * as Yup from "yup"
-import { doResetUserAndRoles, doUpdate, showFindAllUserByIdUser } from '../../../../redux/actions/user-action'
+import { doResetUserAndRoles, doUpdate } from '../../../../redux/actions/user-action'
 import { showRoleList } from '../../../../redux/actions/role-action'
 
 function UserUpdate() {
